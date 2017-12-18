@@ -52,6 +52,18 @@ public class DmscSrcParserBaseListener implements DmscSrcParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSyncContents(DmscSrcParser.SyncContentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSyncContents(DmscSrcParser.SyncContentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterHtmlAttribute(DmscSrcParser.HtmlAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}

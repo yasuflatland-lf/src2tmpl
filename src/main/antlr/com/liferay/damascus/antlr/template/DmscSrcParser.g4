@@ -13,7 +13,11 @@ rootElement
     ;
 
 syncElement
-    : OPEN_TAG_SYNC htmlAttribute* CLOSE_TAG SYNC_TEXT* CLOSE_TAG_SYNC
+    : OPEN_TAG_SYNC htmlAttribute* CLOSE_TAG syncContents CLOSE_TAG_SYNC
+    ;
+
+syncContents
+    : SYNC_TEXT*
     ;
 
 htmlAttribute

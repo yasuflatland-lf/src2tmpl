@@ -38,6 +38,16 @@ public interface DmscSrcParserListener extends ParseTreeListener {
 	 */
 	void exitSyncElement(DmscSrcParser.SyncElementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DmscSrcParser#syncContents}.
+	 * @param ctx the parse tree
+	 */
+	void enterSyncContents(DmscSrcParser.SyncContentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DmscSrcParser#syncContents}.
+	 * @param ctx the parse tree
+	 */
+	void exitSyncContents(DmscSrcParser.SyncContentsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DmscSrcParser#htmlAttribute}.
 	 * @param ctx the parse tree
 	 */
