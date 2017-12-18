@@ -1,0 +1,39 @@
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'antlr'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+ext.antlr = [
+        destinationDir: "src/main/java/com/liferay/damascus/antlr/",
+]
+
+generateGrammarSource {
+    arguments << "-lib" << "src/main/antlr/com/liferay/damascus/antlr/template"
+    arguments << "-package" << "com.liferay.damascus.antlr.template"
+    outputDirectory = file('src/main/java')
+}
+
+dependencies {
+    compile group: 'org.antlr', name: 'antlr4', version: '4.7.1'
+    compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.1'
+    compile group: 'org.antlr', name: 'antlr4-annotations', version: '4.3'
+
+    compile 'org.codehaus.groovy:groovy-all:2.4.1'
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    testCompile group: 'org.antlr', name: 'antlr4-runtime-testsuite', version: '4.7.1'
+
+    antlr 'org.antlr:antlr4:4.7.1'
+}
+
+jar {
+    version = "1.0.0"
+}
+
+clean {
+    delete antlr.destinationDir
+}

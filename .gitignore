@@ -1,0 +1,8 @@
+Src2Tmpl.iml
+Src2Tmpl.ipr
+Src2Tmpl.iws
+.gradle
+.idea
+build
+*.interp
+*.class
