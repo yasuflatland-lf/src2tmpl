@@ -8,14 +8,10 @@ repositories {
     jcenter()
 }
 
-ext.antlr = [
-        destinationDir: "src/main/java/com/liferay/damascus/antlr/",
-]
-
 generateGrammarSource {
-    arguments << "-lib" << "src/main/antlr/com/liferay/damascus/antlr/template"
+    arguments << "-lib" << "src/main/antlr/"
     arguments << "-package" << "com.liferay.damascus.antlr.template"
-    outputDirectory = file('src/main/java')
+    outputDirectory = file('src/main/java/com/liferay/damascus/antlr/template')
 }
 
 dependencies {
@@ -32,8 +28,4 @@ dependencies {
 
 jar {
     version = "1.0.0"
-}
-
-clean {
-    delete antlr.destinationDir
 }
