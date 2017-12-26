@@ -18,63 +18,83 @@ public interface DmscSrcParserListener extends ParseTreeListener {
 	 */
 	void exitFile(DmscSrcParser.FileContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#rootElement}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#dmsctags}.
 	 * @param ctx the parse tree
 	 */
-	void enterRootElement(DmscSrcParser.RootElementContext ctx);
+	void enterDmsctags(DmscSrcParser.DmsctagsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#rootElement}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#dmsctags}.
 	 * @param ctx the parse tree
 	 */
-	void exitRootElement(DmscSrcParser.RootElementContext ctx);
+	void exitDmsctags(DmscSrcParser.DmsctagsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#syncElement}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#syncelement}.
 	 * @param ctx the parse tree
 	 */
-	void enterSyncElement(DmscSrcParser.SyncElementContext ctx);
+	void enterSyncelement(DmscSrcParser.SyncelementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#syncElement}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#syncelement}.
 	 * @param ctx the parse tree
 	 */
-	void exitSyncElement(DmscSrcParser.SyncElementContext ctx);
+	void exitSyncelement(DmscSrcParser.SyncelementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#syncContents}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#syncelementStart}.
 	 * @param ctx the parse tree
 	 */
-	void enterSyncContents(DmscSrcParser.SyncContentsContext ctx);
+	void enterSyncelementStart(DmscSrcParser.SyncelementStartContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#syncContents}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#syncelementStart}.
 	 * @param ctx the parse tree
 	 */
-	void exitSyncContents(DmscSrcParser.SyncContentsContext ctx);
+	void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#htmlAttribute}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#syncelementEnd}.
 	 * @param ctx the parse tree
 	 */
-	void enterHtmlAttribute(DmscSrcParser.HtmlAttributeContext ctx);
+	void enterSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#htmlAttribute}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#syncelementEnd}.
 	 * @param ctx the parse tree
 	 */
-	void exitHtmlAttribute(DmscSrcParser.HtmlAttributeContext ctx);
+	void exitSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#htmlAttributeName}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#rootelement}.
 	 * @param ctx the parse tree
 	 */
-	void enterHtmlAttributeName(DmscSrcParser.HtmlAttributeNameContext ctx);
+	void enterRootelement(DmscSrcParser.RootelementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#htmlAttributeName}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#rootelement}.
 	 * @param ctx the parse tree
 	 */
-	void exitHtmlAttributeName(DmscSrcParser.HtmlAttributeNameContext ctx);
+	void exitRootelement(DmscSrcParser.RootelementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#htmlAttributeValue}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#attribute}.
 	 * @param ctx the parse tree
 	 */
-	void enterHtmlAttributeValue(DmscSrcParser.HtmlAttributeValueContext ctx);
+	void enterAttribute(DmscSrcParser.AttributeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#htmlAttributeValue}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#attribute}.
 	 * @param ctx the parse tree
 	 */
-	void exitHtmlAttributeValue(DmscSrcParser.HtmlAttributeValueContext ctx);
+	void exitAttribute(DmscSrcParser.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DmscSrcParser#chardata}.
+	 * @param ctx the parse tree
+	 */
+	void enterChardata(DmscSrcParser.ChardataContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DmscSrcParser#chardata}.
+	 * @param ctx the parse tree
+	 */
+	void exitChardata(DmscSrcParser.ChardataContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DmscSrcParser#savedata}.
+	 * @param ctx the parse tree
+	 */
+	void enterSavedata(DmscSrcParser.SavedataContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DmscSrcParser#savedata}.
+	 * @param ctx the parse tree
+	 */
+	void exitSavedata(DmscSrcParser.SavedataContext ctx);
 }

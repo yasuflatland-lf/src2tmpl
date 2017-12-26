@@ -28,73 +28,97 @@ public class DmscSrcParserBaseListener implements DmscSrcParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRootElement(DmscSrcParser.RootElementContext ctx) { }
+	@Override public void enterDmsctags(DmscSrcParser.DmsctagsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRootElement(DmscSrcParser.RootElementContext ctx) { }
+	@Override public void exitDmsctags(DmscSrcParser.DmsctagsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSyncElement(DmscSrcParser.SyncElementContext ctx) { }
+	@Override public void enterSyncelement(DmscSrcParser.SyncelementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSyncElement(DmscSrcParser.SyncElementContext ctx) { }
+	@Override public void exitSyncelement(DmscSrcParser.SyncelementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSyncContents(DmscSrcParser.SyncContentsContext ctx) { }
+	@Override public void enterSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSyncContents(DmscSrcParser.SyncContentsContext ctx) { }
+	@Override public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterHtmlAttribute(DmscSrcParser.HtmlAttributeContext ctx) { }
+	@Override public void enterSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitHtmlAttribute(DmscSrcParser.HtmlAttributeContext ctx) { }
+	@Override public void exitSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterHtmlAttributeName(DmscSrcParser.HtmlAttributeNameContext ctx) { }
+	@Override public void enterRootelement(DmscSrcParser.RootelementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitHtmlAttributeName(DmscSrcParser.HtmlAttributeNameContext ctx) { }
+	@Override public void exitRootelement(DmscSrcParser.RootelementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterHtmlAttributeValue(DmscSrcParser.HtmlAttributeValueContext ctx) { }
+	@Override public void enterAttribute(DmscSrcParser.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitHtmlAttributeValue(DmscSrcParser.HtmlAttributeValueContext ctx) { }
+	@Override public void exitAttribute(DmscSrcParser.AttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterChardata(DmscSrcParser.ChardataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitChardata(DmscSrcParser.ChardataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSavedata(DmscSrcParser.SavedataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSavedata(DmscSrcParser.SavedataContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

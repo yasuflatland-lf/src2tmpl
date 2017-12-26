@@ -5,25 +5,26 @@ SEA_WS
 	;
 
 RootDecl
-	: '<dmsc:root' -> pushMode(INSIDE_TAG) 
+	: '<' S? 'dmsc:root' -> pushMode(INSIDE_TAG) 
 	;
 	
 SyncDecl
-	: '<dmsc:sync' -> pushMode(INSIDE_TAG) 
+	: '<' S? 'dmsc:sync' -> pushMode(INSIDE_TAG) 
 	;
 
 SyncDeclClose
-	: '</dmsc:sync' -> pushMode(INSIDE_TAG) 
+	: '</' S? 'dmsc:sync' -> pushMode(INSIDE_TAG) 
 	;
 
 TEXT
-	: ~[<]+ 
+	: ~[<]+
+	| '<'
 	;
-
+	
 // ----------------- Everything INSIDE of a tag ---------------------
 mode INSIDE_TAG;
 
-CLOSE       :   '>'                     -> popMode ;
+CLOSE       :   '>'                  -> popMode ;
 SLASH_CLOSE :   '/>'                    -> popMode ;
 SLASH       :   '/' ;
 EQUALS      :   '=' ;
