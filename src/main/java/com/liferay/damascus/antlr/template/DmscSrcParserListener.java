@@ -38,26 +38,6 @@ public interface DmscSrcParserListener extends ParseTreeListener {
 	 */
 	void exitSyncelement(DmscSrcParser.SyncelementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#syncelementStart}.
-	 * @param ctx the parse tree
-	 */
-	void enterSyncelementStart(DmscSrcParser.SyncelementStartContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#syncelementStart}.
-	 * @param ctx the parse tree
-	 */
-	void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#syncelementEnd}.
-	 * @param ctx the parse tree
-	 */
-	void enterSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#syncelementEnd}.
-	 * @param ctx the parse tree
-	 */
-	void exitSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DmscSrcParser#rootelement}.
 	 * @param ctx the parse tree
 	 */
@@ -77,6 +57,16 @@ public interface DmscSrcParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttribute(DmscSrcParser.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DmscSrcParser#othertags}.
+	 * @param ctx the parse tree
+	 */
+	void enterOthertags(DmscSrcParser.OthertagsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DmscSrcParser#othertags}.
+	 * @param ctx the parse tree
+	 */
+	void exitOthertags(DmscSrcParser.OthertagsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DmscSrcParser#chardata}.
 	 * @param ctx the parse tree
