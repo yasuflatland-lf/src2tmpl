@@ -3,32 +3,25 @@ parser grammar DmscSrcParser;
 options { tokenVocab=DmscSrcLexer; } // use tokens from ModeTagsLexer.g4
 
 file
-    : syncElement
-    | rootElement
-    | TEXT*
-    ;
+	: (chardata? element chardata?)*
+	;
 
-rootElement
-    : OPEN_TAG_ROOT htmlAttribute* CLOSE_TAG_ROOT
-    ;
+element     
+	: SyncDecl attribute* CLOSE savedata? SyncDeclClose CLOSE
+	| RootDecl attribute* SLASH_CLOSE
+	;
 
-syncElement
-    : OPEN_TAG_SYNC htmlAttribute* CLOSE_TAG syncContents CLOSE_TAG_SYNC
-    ;
+attribute   :   Name '=' STRING ; // Our STRING is AttValue in spec
 
-syncContents
-    : SYNC_TEXT*
+/** ``All text that is not markup constitutes the character data of
+ *  the document.''
+ */
+chardata
+    : TEXT 
+    | SEA_WS 
     ;
-
-htmlAttribute
-    : htmlAttributeName TAG_EQUALS htmlAttributeValue
-    | htmlAttributeName
-    ;
-
-htmlAttributeName
-    : TAG_NAME
-    ;
-
-htmlAttributeValue
-    : ATTVALUE_VALUE
-    ;
+    
+savedata
+	: TEXT
+	| SEA_WS
+	;

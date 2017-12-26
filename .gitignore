@@ -6,3 +6,6 @@ Src2Tmpl.iws
 build
 *.interp
 *.class
+.settings
+bin
+target

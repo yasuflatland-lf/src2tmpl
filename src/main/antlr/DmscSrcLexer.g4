@@ -1,134 +1,58 @@
 lexer grammar DmscSrcLexer;
 
-// Default mode rules (the SEA)
-OPEN_TAG_ROOT
-    : WS* '<' WS* 'dmsc:root' WS*   -> mode(DMSC_TAG_MODE)
-    ;
+SEA_WS	
+	: (' '|'\t'|'\r'? '\n')+ 
+	;
 
-OPEN_TAG_SYNC
-    : WS* '<' WS* 'dmsc:sync' WS*   -> mode(DMSC_TAG_MODE)
-    ;
+RootDecl
+	: '<dmsc:root' -> pushMode(INSIDE_TAG) 
+	;
+	
+SyncDecl
+	: '<dmsc:sync' -> pushMode(INSIDE_TAG) 
+	;
+
+SyncDeclClose
+	: '</dmsc:sync' -> pushMode(INSIDE_TAG) 
+	;
 
 TEXT
-    : .+?
-    ;
+	: ~[<]+ 
+	;
 
-WS
-    : [ \r\t\u000C\n]+ -> channel(HIDDEN)
-    ; // Preserve white spaces to restore at the end.
+// ----------------- Everything INSIDE of a tag ---------------------
+mode INSIDE_TAG;
 
-//
-// Sync tag mode
-//
-mode DMSC_SYNC_TAG_MODE;
-
-CLOSE_TAG_SYNC
-    : WS* '<' WS* '/' WS* 'dmsc:sync' WS* '>' WS* -> mode(DEFAULT_MODE)
-    ;
-
-SYNC_TEXT
-    : .+?
-    ;
-
-//
-// Root mode
-//
-mode DMSC_TAG_MODE;
-
-CLOSE_TAG_ROOT
-    : WS* '/' WS* '>' WS*    -> mode(DEFAULT_MODE)
-    ;
-
-CLOSE_TAG
-    : WS* '>' WS* -> mode(DMSC_SYNC_TAG_MODE)
-    ;
-
-//
-// lexing mode for attribute values
-//
-TAG_EQUALS
-    : '=' -> pushMode(ATTVALUE)
-    ;
-
-TAG_NAME
-    : WS* TAG_NameStartChar TAG_NameChar*
-    ;
+CLOSE       :   '>'                     -> popMode ;
+SLASH_CLOSE :   '/>'                    -> popMode ;
+SLASH       :   '/' ;
+EQUALS      :   '=' ;
+STRING      :   '"' ~[<"]* '"'
+            |   '\'' ~[<']* '\''
+            ;
+Name        :   NameStartChar NameChar* ;
+S           :   [ \t\r\n]               -> channel(HIDDEN) ;
 
 fragment
-DIGIT
-    : [0-9]
-    ;
+HEXDIGIT    :   [a-fA-F0-9] ;
 
 fragment
-TAG_NameChar
-    : TAG_NameStartChar
-    | '-'
-    | '_'
-    | '.'
-    | DIGIT
-    |   '\u00B7'
-    |   '\u0300'..'\u036F'
-    |   '\u203F'..'\u2040'
-    ;
+DIGIT       :   [0-9] ;
 
 fragment
-TAG_NameStartChar
-    :   [:a-zA-Z]
-    |   '\u2070'..'\u218F'
-    |   '\u2C00'..'\u2FEF'
-    |   '\u3001'..'\uD7FF'
-    |   '\uF900'..'\uFDCF'
-    |   '\uFDF0'..'\uFFFD'
-    ;
+NameChar    :   NameStartChar
+            |   '-' | '_' | '.' | DIGIT
+            |   '\u00B7'
+            |   '\u0300'..'\u036F'
+            |   '\u203F'..'\u2040'
+            ;
 
-//
-// attribute values
-//
-mode ATTVALUE;
-
-// an attribute value may have spaces b/t the '=' and the value
-ATTVALUE_VALUE
-    : [ ]* ATTRIBUTE -> popMode
-    ;
-
-ATTRIBUTE
-    : DOUBLE_QUOTE_STRING
-    | SINGLE_QUOTE_STRING
-    | ATTCHARS
-    | HEXCHARS
-    | DECCHARS
-    ;
-
-fragment ATTCHAR
-    : '-'
-    | '_'
-    | '.'
-    | '/'
-    | '+'
-    | ','
-    | '?'
-    | '='
-    | ':'
-    | ';'
-    | '#'
-    | [0-9a-zA-Z]
-    ;
-
-fragment ATTCHARS
-    : ATTCHAR+ ' '?
-    ;
-
-fragment HEXCHARS
-    : '#' [0-9a-fA-F]+
-    ;
-
-fragment DECCHARS
-    : [0-9]+ '%'?
-    ;
-
-fragment DOUBLE_QUOTE_STRING
-    : '"' ~[<"]* '"'
-    ;
-fragment SINGLE_QUOTE_STRING
-    : '\'' ~[<']* '\''
-    ;
+fragment
+NameStartChar
+            :   [:a-zA-Z]
+            |   '\u2070'..'\u218F'
+            |   '\u2C00'..'\u2FEF'
+            |   '\u3001'..'\uD7FF'
+            |   '\uF900'..'\uFDCF'
+            |   '\uFDF0'..'\uFFFD'
+            ;
