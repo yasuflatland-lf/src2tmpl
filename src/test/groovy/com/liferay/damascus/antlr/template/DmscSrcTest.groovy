@@ -12,7 +12,9 @@ import spock.lang.Specification
 class DmscSrcTest extends Specification {
     def "parse single bundle"() {
         given:
-        def stream = CharStreams.fromString('<test>hoge</test>')
+		def contents = '<test>hoge</test>'
+		def result = '(file (dmsctags < t est>hoge </ t est>))'
+        def stream = CharStreams.fromString(contents)
         def lexer = new DmscSrcLexer(stream)
         def tokens = new CommonTokenStream(lexer)
         def parser = new DmscSrcParser(tokens)
@@ -21,6 +23,6 @@ class DmscSrcTest extends Specification {
         ParseTree tree = parser.file(); // begin parsing at init rule
 
         then:
-        "" == tree.toStringTree(parser)
+        result == tree.toStringTree(parser)
     }
 }

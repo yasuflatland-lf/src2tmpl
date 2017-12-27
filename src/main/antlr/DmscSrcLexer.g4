@@ -1,34 +1,41 @@
 lexer grammar DmscSrcLexer;
 
 SEA_WS	
-	: (' '|'\t'|'\r'? '\n')+ 
+	: (' '|'\t'|'\r'? '\n')+ -> channel(HIDDEN) 
 	;
 
+OPEN
+	: '<' -> pushMode(CHECK_DAMASCUS_TAG) 
+	;
+
+SLASH_OPEN
+	: '</' -> pushMode(CHECK_DAMASCUS_TAG)
+	;
+	
+TEXT
+	: ~[<]+
+	| '<%'
+	;
+
+mode CHECK_DAMASCUS_TAG;
+
 RootDecl
-	: '<dmsc:root' -> pushMode(INSIDE_TAG) 
+	: 'dmsc:root' S? -> pushMode(INSIDE_TAG) 
 	;
 	
 SyncDecl
-	: '<dmsc:sync' -> pushMode(INSIDE_TAG) 
+	: 'dmsc:sync' S? -> pushMode(INSIDE_TAG) 
 	;
 
-SyncDeclClose
-	: '</dmsc:sync' -> pushMode(INSIDE_TAG) 
+OTHER_TEXT
+	: . -> more, mode(DEFAULT_MODE)
 	;
-
-TEXT
-	: ~[<]+
-	| '<'
-	;
-
-OTHERTAGS
-	: '<' .*? '>' ;		
-	
+			
 // ----------------- Everything INSIDE of a tag ---------------------
 mode INSIDE_TAG;
 
-CLOSE       :   '>'                  -> popMode ;
-SLASH_CLOSE :   '/>'                 -> popMode ;
+CLOSE       :   '>'                  -> mode(DEFAULT_MODE) ;
+SLASH_CLOSE :   '/>'                 -> mode(DEFAULT_MODE) ;
 SLASH       :   '/' ;
 EQUALS      :   '=' ;
 STRING      :   '"' ~[<"]* '"'

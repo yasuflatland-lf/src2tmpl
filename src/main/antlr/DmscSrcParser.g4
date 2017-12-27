@@ -3,31 +3,30 @@ parser grammar DmscSrcParser;
 options { tokenVocab=DmscSrcLexer; } // use tokens from ModeTagsLexer.g4
 
 file
-	: (chardata? dmsctags)* chardata?
-	| (dmsctags chardata?)* chardata?
+	: .*? (dmsctags .*?)+ 
 	;
 
 dmsctags     
-	: syncelement
+	: syncelementStart
+	| syncelementEnd
 	| rootelement
-	| othertags
 	;
 
-syncelement
-	: SyncDecl attribute* CLOSE savedata? SyncDeclClose CLOSE
+syncelementStart
+	: OPEN SyncDecl attribute* CLOSE
+	;
+
+syncelementEnd
+	: SLASH_OPEN SyncDecl CLOSE
 	;
 
 rootelement
-	: RootDecl attribute* SLASH_CLOSE
+	: OPEN RootDecl attribute* SLASH_CLOSE
 	;
 	
 attribute   
 	:   Name '=' STRING
 	; 
-
-othertags
-	: OTHERTAGS
-	;
 
 chardata
     : TEXT 
@@ -35,6 +34,5 @@ chardata
     ;
     
 savedata
-	: TEXT
-	| SEA_WS
+	: chardata*
 	;
