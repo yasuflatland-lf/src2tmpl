@@ -68,25 +68,15 @@ public interface DmscSrcParserListener extends ParseTreeListener {
 	 */
 	void exitAttribute(DmscSrcParser.AttributeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#chardata}.
+	 * Enter a parse tree produced by {@link DmscSrcParser#alldata}.
 	 * @param ctx the parse tree
 	 */
-	void enterChardata(DmscSrcParser.ChardataContext ctx);
+	void enterAlldata(DmscSrcParser.AlldataContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#chardata}.
+	 * Exit a parse tree produced by {@link DmscSrcParser#alldata}.
 	 * @param ctx the parse tree
 	 */
-	void exitChardata(DmscSrcParser.ChardataContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DmscSrcParser#savedata}.
-	 * @param ctx the parse tree
-	 */
-	void enterSavedata(DmscSrcParser.SavedataContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DmscSrcParser#savedata}.
-	 * @param ctx the parse tree
-	 */
-	void exitSavedata(DmscSrcParser.SavedataContext ctx);
+	void exitAlldata(DmscSrcParser.AlldataContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DmscSrcParser#endoffile}.
 	 * @param ctx the parse tree

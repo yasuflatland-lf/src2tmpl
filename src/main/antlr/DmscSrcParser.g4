@@ -3,13 +3,18 @@ parser grammar DmscSrcParser;
 options { tokenVocab=DmscSrcLexer; } // use tokens from ModeTagsLexer.g4
 
 @members {
-	boolean rootState = false;
-	boolean syncState = false;	
-	int syncCnt = 0;
+	protected boolean rootState = false;
+	protected int rootCnt = 0;
+	protected boolean betweenSyncTag = false;	
+	protected int syncCnt = 0;
+	
+	public boolean isBetweenSyncTag() {
+		return betweenSyncTag;
+	}
 }
 
 file
-	: .*? (dmsctags .*?)+ endoffile
+	: alldata (dmsctags alldata)+ endoffile
 	;
 
 dmsctags     
@@ -25,23 +30,27 @@ syncelementStart
 			notifyErrorListeners("dmsc:root must be decleared first.");
 		}
 		syncCnt++;
-		syncState = true;
+		betweenSyncTag = true;
 	}
 	;
 
 syncelementEnd
 	: SLASH_OPEN SyncDecl CLOSE
 	{
-		if(!syncState) {
+		if(!betweenSyncTag) {
 			notifyErrorListeners("dmsc:sync start tag is missing.");
 		}
-		syncState = false;
+		betweenSyncTag = false;
 	}	
 	;
 
 rootelement
 	: OPEN RootDecl attribute* SLASH_CLOSE
 	{
+		if(1 <= rootCnt) {
+			notifyErrorListeners("dmsc:root is only allowed once to use in a file");
+		}
+		rootCnt++;
 		rootState = true;
 	}
 	;
@@ -50,19 +59,14 @@ attribute
 	:   Name '=' STRING
 	; 
 
-chardata
-    : TEXT 
-    | SEA_WS 
-    ;
-    
-savedata
-	: chardata*
+alldata
+	: .*?
 	;
 
 endoffile
 	: EOF
 	{
-		if(0 < syncCnt && syncState) {
+		if(0 < syncCnt && betweenSyncTag) {
 			notifyErrorListeners("dmsc:sync is not closed.");
 		}		
 	}
