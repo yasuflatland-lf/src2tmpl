@@ -7,9 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 
+import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
-import com.liferay.damascus.antlr.template.DmscSrcParserBaseListener;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,11 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public class SourceLoader extends DmscSrcParserBaseListener {
+public class SourceLoader extends DmscSrcParserExListener {
 
-	public SourceLoader(TokenStream tokens) {
+	public SourceLoader(TokenStream tokens, Map<String, String> contentsIdMap) {
+		this.contentsIdMap = contentsIdMap;
+		
 		rewriter = new TokenStreamRewriter(tokens);
 		rootAttributes = new ConcurrentHashMap<>();
 		syncAttributes = new ConcurrentHashMap<>();
@@ -48,7 +50,13 @@ public class SourceLoader extends DmscSrcParserBaseListener {
 	public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
 		List<AttributeContext> attributes = ctx.attribute();
 		for (AttributeContext attribute : attributes) {
-			syncAttributes.put(attribute.Name().getText(), attribute.STRING().getText());
+			if (ID.equals(attribute.Name().getText())) {
+
+				String currentId = stripQuotations(attribute.STRING().getText());
+
+				syncAttributes.put(currentId, "");
+				return;
+			}
 		}
 	}
 
@@ -73,6 +81,7 @@ public class SourceLoader extends DmscSrcParserBaseListener {
 	@Getter
 	protected TokenStreamRewriter rewriter;
 
+	protected Map<String, String> contentsIdMap;
 	protected Map<String, String> rootAttributes;
 	protected Map<String, String> syncAttributes;
 }

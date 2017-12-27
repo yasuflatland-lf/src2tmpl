@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
-import com.liferay.damascus.antlr.template.DmscSrcParserBaseListener;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public class TemplateLoader extends DmscSrcParserBaseListener {
+public class TemplateLoader extends DmscSrcParserExListener {
 
 	/**
 	 * Constructor
@@ -31,11 +29,6 @@ public class TemplateLoader extends DmscSrcParserBaseListener {
 		syncAttributes = new ConcurrentHashMap<>();
 	}
 
-	protected String stripQuotations(String str) {
-		String str1 = StringUtils.strip(str, "\"");
-		return StringUtils.strip(str1, "'");
-	}
-	
 	/**
 	 * Get Sync Start element
 	 */
@@ -70,7 +63,6 @@ public class TemplateLoader extends DmscSrcParserBaseListener {
 		syncAttributes.put(currentId, ctx.getText());
 	}
 
-	static final protected String ID = "id";
 
 	protected String currentId = "";
 

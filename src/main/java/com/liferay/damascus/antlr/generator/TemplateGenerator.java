@@ -3,6 +3,7 @@ package com.liferay.damascus.antlr.generator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -55,7 +56,7 @@ public class TemplateGenerator {
 		ParseTree tree = parser.file(); // parse
 
 		ParseTreeWalker walker = new ParseTreeWalker();
-		SourceLoader sourceLoader = new SourceLoader(tokens);
+		SourceLoader sourceLoader = new SourceLoader(tokens, new ConcurrentHashMap<>());
 		walker.walk(sourceLoader, tree);
 
 		return sourceLoader.getRewriter().getText();
