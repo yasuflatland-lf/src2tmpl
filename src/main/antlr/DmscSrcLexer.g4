@@ -17,6 +17,7 @@ TEXT
 	| '<%'
 	;
 
+// ----------------- Check if Damascus tags ---------------------
 mode CHECK_DAMASCUS_TAG;
 
 RootDecl

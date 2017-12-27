@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -12,8 +11,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.io.FileUtils;
 
-import com.liferay.damascus.antlr.common.BailOutDmscSrcLexer;
 import com.liferay.damascus.antlr.common.UnderlineListener;
+import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 
 public class TemplateGenerator {
@@ -39,12 +38,10 @@ public class TemplateGenerator {
 	public String generator(String contents) {
 		
 		CharStream input = CharStreams.fromString(contents);
-		BailOutDmscSrcLexer lexer = new BailOutDmscSrcLexer(input);
+		DmscSrcLexer lexer = new DmscSrcLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		DmscSrcParser parser = new DmscSrcParser(tokens);
 		
-        parser.setErrorHandler(new BailErrorStrategy());
-        
 		// Apply custom listener
         parser.removeErrorListeners(); // remove ConsoleErrorListener
         parser.addErrorListener(new UnderlineListener());
