@@ -64,8 +64,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tmg = new TemplateGenerator()
-		def result = tmg.generator(filePath)
+		def result = TemplateGenerator.generator(filePath)
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		
@@ -120,8 +119,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tmg = new TemplateGenerator()
-		def result = tmg.generator(filePath)
+		def result = TemplateGenerator.generator(filePath)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -177,8 +175,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tmg = new TemplateGenerator()
-		def result = tmg.generator(filePath)
+		def result = TemplateGenerator.generator(filePath)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -235,8 +232,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tmg = new TemplateGenerator()
-		def result = tmg.generator(filePath)
+		def result = TemplateGenerator.generator(filePath)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -406,8 +402,7 @@ public class JarUtil {
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tmg = new TemplateGenerator()
-		def result = tmg.generator(filePath)
+		def result = TemplateGenerator.generator(filePath)
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		

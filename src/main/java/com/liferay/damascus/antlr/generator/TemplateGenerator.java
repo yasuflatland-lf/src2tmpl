@@ -24,7 +24,7 @@ public class TemplateGenerator {
 	 * @return parsed strings
 	 * @throws IOException
 	 */
-	public String generator(File contentsFile) throws IOException {
+	static public String generator(File contentsFile) throws IOException {
 		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
 		return generator(contents);
 	}
@@ -35,7 +35,7 @@ public class TemplateGenerator {
 	 * @param contents
 	 * @return parsed strings
 	 */
-	public String generator(String contents) {
+	static public String generator(String contents) {
 		
 		CharStream input = CharStreams.fromString(contents);
 		DmscSrcLexer lexer = new DmscSrcLexer(input);
