@@ -7,19 +7,14 @@ options { tokenVocab=DmscSrcLexer; } // use tokens from ModeTagsLexer.g4
 	protected int rootCnt = 0;
 	protected boolean betweenSyncTag = false;	
 	protected int syncCnt = 0;
-	
-	public boolean isBetweenSyncTag() {
-		return betweenSyncTag;
-	}
 }
 
 file
-	: alldata (dmsctags alldata)+ endoffile
+	: alldata (dmsctags alldata | syncelementStart savedata )+ endoffile
 	;
 
 dmsctags     
-	: syncelementStart
-	| syncelementEnd
+	: syncelementEnd
 	| rootelement
 	;
 
@@ -62,6 +57,10 @@ attribute
 alldata
 	: .*?
 	;
+	
+savedata
+	: .*?
+	;	
 
 endoffile
 	: EOF

@@ -21,10 +21,11 @@ public class DmscSrcParser extends Parser {
 		SLASH_CLOSE=8, SLASH=9, EQUALS=10, STRING=11, Name=12, S=13;
 	public static final int
 		RULE_file = 0, RULE_dmsctags = 1, RULE_syncelementStart = 2, RULE_syncelementEnd = 3, 
-		RULE_rootelement = 4, RULE_attribute = 5, RULE_alldata = 6, RULE_endoffile = 7;
+		RULE_rootelement = 4, RULE_attribute = 5, RULE_alldata = 6, RULE_savedata = 7, 
+		RULE_endoffile = 8;
 	public static final String[] ruleNames = {
 		"file", "dmsctags", "syncelementStart", "syncelementEnd", "rootelement", 
-		"attribute", "alldata", "endoffile"
+		"attribute", "alldata", "savedata", "endoffile"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -84,10 +85,6 @@ public class DmscSrcParser extends Parser {
 		protected int rootCnt = 0;
 		protected boolean betweenSyncTag = false;	
 		protected int syncCnt = 0;
-		
-		public boolean isBetweenSyncTag() {
-			return betweenSyncTag;
-		}
 
 	public DmscSrcParser(TokenStream input) {
 		super(input);
@@ -108,6 +105,18 @@ public class DmscSrcParser extends Parser {
 		}
 		public DmsctagsContext dmsctags(int i) {
 			return getRuleContext(DmsctagsContext.class,i);
+		}
+		public List<SyncelementStartContext> syncelementStart() {
+			return getRuleContexts(SyncelementStartContext.class);
+		}
+		public SyncelementStartContext syncelementStart(int i) {
+			return getRuleContext(SyncelementStartContext.class,i);
+		}
+		public List<SavedataContext> savedata() {
+			return getRuleContexts(SavedataContext.class);
+		}
+		public SavedataContext savedata(int i) {
+			return getRuleContext(SavedataContext.class,i);
 		}
 		public FileContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -130,25 +139,39 @@ public class DmscSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(16);
+			setState(18);
 			alldata();
-			setState(20); 
+			setState(25); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
-				{
-				setState(17);
-				dmsctags();
-				setState(18);
-				alldata();
+				setState(25);
+				_errHandler.sync(this);
+				switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
+				case 1:
+					{
+					setState(19);
+					dmsctags();
+					setState(20);
+					alldata();
+					}
+					break;
+				case 2:
+					{
+					setState(22);
+					syncelementStart();
+					setState(23);
+					savedata();
+					}
+					break;
 				}
 				}
-				setState(22); 
+				setState(27); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==OPEN || _la==SLASH_OPEN );
-			setState(24);
+			setState(29);
 			endoffile();
 			}
 		}
@@ -164,9 +187,6 @@ public class DmscSrcParser extends Parser {
 	}
 
 	public static class DmsctagsContext extends ParserRuleContext {
-		public SyncelementStartContext syncelementStart() {
-			return getRuleContext(SyncelementStartContext.class,0);
-		}
 		public SyncelementEndContext syncelementEnd() {
 			return getRuleContext(SyncelementEndContext.class,0);
 		}
@@ -191,30 +211,25 @@ public class DmscSrcParser extends Parser {
 		DmsctagsContext _localctx = new DmsctagsContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_dmsctags);
 		try {
-			setState(29);
+			setState(33);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case SLASH_OPEN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(26);
-				syncelementStart();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(27);
+				setState(31);
 				syncelementEnd();
 				}
 				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
+			case OPEN:
+				enterOuterAlt(_localctx, 2);
 				{
-				setState(28);
+				setState(32);
 				rootelement();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -259,25 +274,25 @@ public class DmscSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
+			setState(35);
 			match(OPEN);
-			setState(32);
-			match(SyncDecl);
 			setState(36);
+			match(SyncDecl);
+			setState(40);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Name) {
 				{
 				{
-				setState(33);
+				setState(37);
 				attribute();
 				}
 				}
-				setState(38);
+				setState(42);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(39);
+			setState(43);
 			match(CLOSE);
 
 					if(!rootState) {
@@ -323,11 +338,11 @@ public class DmscSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(42);
+			setState(46);
 			match(SLASH_OPEN);
-			setState(43);
+			setState(47);
 			match(SyncDecl);
-			setState(44);
+			setState(48);
 			match(CLOSE);
 
 					if(!betweenSyncTag) {
@@ -379,25 +394,25 @@ public class DmscSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47);
+			setState(51);
 			match(OPEN);
-			setState(48);
-			match(RootDecl);
 			setState(52);
+			match(RootDecl);
+			setState(56);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Name) {
 				{
 				{
-				setState(49);
+				setState(53);
 				attribute();
 				}
 				}
-				setState(54);
+				setState(58);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(55);
+			setState(59);
 			match(SLASH_CLOSE);
 
 					if(1 <= rootCnt) {
@@ -442,11 +457,11 @@ public class DmscSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(58);
+			setState(62);
 			match(Name);
-			setState(59);
+			setState(63);
 			match(EQUALS);
-			setState(60);
+			setState(64);
 			match(STRING);
 			}
 		}
@@ -483,21 +498,72 @@ public class DmscSrcParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
+			setState(69);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1+1 ) {
 					{
 					{
-					setState(62);
+					setState(66);
 					matchWildcard();
 					}
 					} 
 				}
-				setState(67);
+				setState(71);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SavedataContext extends ParserRuleContext {
+		public SavedataContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_savedata; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DmscSrcParserListener ) ((DmscSrcParserListener)listener).enterSavedata(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DmscSrcParserListener ) ((DmscSrcParserListener)listener).exitSavedata(this);
+		}
+	}
+
+	public final SavedataContext savedata() throws RecognitionException {
+		SavedataContext _localctx = new SavedataContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_savedata);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(75);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1+1 ) {
+					{
+					{
+					setState(72);
+					matchWildcard();
+					}
+					} 
+				}
+				setState(77);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
 			}
 		}
@@ -530,11 +596,11 @@ public class DmscSrcParser extends Parser {
 
 	public final EndoffileContext endoffile() throws RecognitionException {
 		EndoffileContext _localctx = new EndoffileContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_endoffile);
+		enterRule(_localctx, 16, RULE_endoffile);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(78);
 			match(EOF);
 
 					if(0 < syncCnt && betweenSyncTag) {
@@ -555,24 +621,26 @@ public class DmscSrcParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17J\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\3\2\6\2"+
-		"\27\n\2\r\2\16\2\30\3\2\3\2\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\7\4%\n\4"+
-		"\f\4\16\4(\13\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\7\6\65\n\6"+
-		"\f\6\16\68\13\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\7\bB\n\b\f\b\16\bE\13"+
-		"\b\3\t\3\t\3\t\3\t\3C\2\n\2\4\6\b\n\f\16\20\2\2\2G\2\22\3\2\2\2\4\37\3"+
-		"\2\2\2\6!\3\2\2\2\b,\3\2\2\2\n\61\3\2\2\2\f<\3\2\2\2\16C\3\2\2\2\20F\3"+
-		"\2\2\2\22\26\5\16\b\2\23\24\5\4\3\2\24\25\5\16\b\2\25\27\3\2\2\2\26\23"+
-		"\3\2\2\2\27\30\3\2\2\2\30\26\3\2\2\2\30\31\3\2\2\2\31\32\3\2\2\2\32\33"+
-		"\5\20\t\2\33\3\3\2\2\2\34 \5\6\4\2\35 \5\b\5\2\36 \5\n\6\2\37\34\3\2\2"+
-		"\2\37\35\3\2\2\2\37\36\3\2\2\2 \5\3\2\2\2!\"\7\4\2\2\"&\7\b\2\2#%\5\f"+
-		"\7\2$#\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\')\3\2\2\2(&\3\2\2\2)*\7"+
-		"\t\2\2*+\b\4\1\2+\7\3\2\2\2,-\7\5\2\2-.\7\b\2\2./\7\t\2\2/\60\b\5\1\2"+
-		"\60\t\3\2\2\2\61\62\7\4\2\2\62\66\7\7\2\2\63\65\5\f\7\2\64\63\3\2\2\2"+
-		"\658\3\2\2\2\66\64\3\2\2\2\66\67\3\2\2\2\679\3\2\2\28\66\3\2\2\29:\7\n"+
-		"\2\2:;\b\6\1\2;\13\3\2\2\2<=\7\16\2\2=>\7\f\2\2>?\7\r\2\2?\r\3\2\2\2@"+
-		"B\13\2\2\2A@\3\2\2\2BE\3\2\2\2CD\3\2\2\2CA\3\2\2\2D\17\3\2\2\2EC\3\2\2"+
-		"\2FG\7\2\2\3GH\b\t\1\2H\21\3\2\2\2\7\30\37&\66C";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17T\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
+		"\3\2\3\2\3\2\3\2\6\2\34\n\2\r\2\16\2\35\3\2\3\2\3\3\3\3\5\3$\n\3\3\4\3"+
+		"\4\3\4\7\4)\n\4\f\4\16\4,\13\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\6\3\6"+
+		"\3\6\7\69\n\6\f\6\16\6<\13\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\7\bF\n\b"+
+		"\f\b\16\bI\13\b\3\t\7\tL\n\t\f\t\16\tO\13\t\3\n\3\n\3\n\3\n\4GM\2\13\2"+
+		"\4\6\b\n\f\16\20\22\2\2\2Q\2\24\3\2\2\2\4#\3\2\2\2\6%\3\2\2\2\b\60\3\2"+
+		"\2\2\n\65\3\2\2\2\f@\3\2\2\2\16G\3\2\2\2\20M\3\2\2\2\22P\3\2\2\2\24\33"+
+		"\5\16\b\2\25\26\5\4\3\2\26\27\5\16\b\2\27\34\3\2\2\2\30\31\5\6\4\2\31"+
+		"\32\5\20\t\2\32\34\3\2\2\2\33\25\3\2\2\2\33\30\3\2\2\2\34\35\3\2\2\2\35"+
+		"\33\3\2\2\2\35\36\3\2\2\2\36\37\3\2\2\2\37 \5\22\n\2 \3\3\2\2\2!$\5\b"+
+		"\5\2\"$\5\n\6\2#!\3\2\2\2#\"\3\2\2\2$\5\3\2\2\2%&\7\4\2\2&*\7\b\2\2\'"+
+		")\5\f\7\2(\'\3\2\2\2),\3\2\2\2*(\3\2\2\2*+\3\2\2\2+-\3\2\2\2,*\3\2\2\2"+
+		"-.\7\t\2\2./\b\4\1\2/\7\3\2\2\2\60\61\7\5\2\2\61\62\7\b\2\2\62\63\7\t"+
+		"\2\2\63\64\b\5\1\2\64\t\3\2\2\2\65\66\7\4\2\2\66:\7\7\2\2\679\5\f\7\2"+
+		"8\67\3\2\2\29<\3\2\2\2:8\3\2\2\2:;\3\2\2\2;=\3\2\2\2<:\3\2\2\2=>\7\n\2"+
+		"\2>?\b\6\1\2?\13\3\2\2\2@A\7\16\2\2AB\7\f\2\2BC\7\r\2\2C\r\3\2\2\2DF\13"+
+		"\2\2\2ED\3\2\2\2FI\3\2\2\2GH\3\2\2\2GE\3\2\2\2H\17\3\2\2\2IG\3\2\2\2J"+
+		"L\13\2\2\2KJ\3\2\2\2LO\3\2\2\2MN\3\2\2\2MK\3\2\2\2N\21\3\2\2\2OM\3\2\2"+
+		"\2PQ\7\2\2\3QR\b\n\1\2R\23\3\2\2\2\t\33\35#*:GM";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

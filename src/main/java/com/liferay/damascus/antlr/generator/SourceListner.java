@@ -54,10 +54,14 @@ public class SourceListner extends DmscSrcParserBaseListener {
 	}
 	
 	/**
-	 * Get text data
+	 * Get text data between sync tag
 	 */
 	@Override 
-	public void exitAlldata(DmscSrcParser.AlldataContext ctx) { 
+	public void exitSavedata(DmscSrcParser.SavedataContext ctx) {
+		// Delete contents between tags
+		//rewriter.delete(ctx.start);
+		// Replace contents here
+		// rewriter.insertAfter(ctx.start, "replace here");
 	}	
 	
 	@Getter
