@@ -18,7 +18,7 @@ class TemplateGeneratorTest extends Specification {
 	@Unroll("smoke test (jsp file)")
 	def "smoke test (jsp file)" () {
 		when:
-		def testFileName = "test.js"
+		def testFileName = "test.jsp"
 		
 		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
 		tf.dir(TEST_DIR) {

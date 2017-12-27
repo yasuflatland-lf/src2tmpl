@@ -14,10 +14,16 @@ import com.liferay.damascus.antlr.template.DmscSrcParserBaseListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Source Loader
+ * 
+ * @author Yasuyuki Takeo
+ *
+ */
 @Slf4j
-public class SourceListner extends DmscSrcParserBaseListener {
+public class SourceLoader extends DmscSrcParserBaseListener {
 
-	public SourceListner(TokenStream tokens) {
+	public SourceLoader(TokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
 		rootAttributes = new ConcurrentHashMap<>();
 		syncAttributes = new ConcurrentHashMap<>();

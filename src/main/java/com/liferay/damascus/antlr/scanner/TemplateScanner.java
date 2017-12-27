@@ -1,8 +1,9 @@
-package com.liferay.damascus.antlr.generator;
+package com.liferay.damascus.antlr.scanner;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -16,48 +17,51 @@ import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 
 /**
- * Template Generator
+ * Template Scanner
+ * 
+ * Scanning a template and extract contents to swap in a source where surrounded
+ * by sync tags.
  * 
  * @author Yasuyuki Takeo
  *
  */
-public class TemplateGenerator {
+public class TemplateScanner {
 
 	/**
-	 * Template Generator
+	 * Get Contents Map
 	 * 
 	 * @param contentsFile
 	 * @return parsed strings
 	 * @throws IOException
 	 */
-	static public String generator(File contentsFile) throws IOException {
+	static public Map<String, String> getContentsMap(File contentsFile) throws IOException {
 		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return generator(contents);
+		return getContentsMap(contents);
 	}
 
 	/**
-	 * Template Generator
+	 * Get Contents Map
 	 * 
 	 * @param contents
-	 * @return parsed strings
+	 * @return id and contents map for generator
 	 */
-	static public String generator(String contents) {
-		
+	static public Map<String, String> getContentsMap(String contents) {
+
 		CharStream input = CharStreams.fromString(contents);
 		DmscSrcLexer lexer = new DmscSrcLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		DmscSrcParser parser = new DmscSrcParser(tokens);
-		
+
 		// Apply custom listener
-        parser.removeErrorListeners(); // remove ConsoleErrorListener
-        parser.addErrorListener(new UnderlineListener());
-        
+		parser.removeErrorListeners(); // remove ConsoleErrorListener
+		parser.addErrorListener(new UnderlineListener());
+
 		ParseTree tree = parser.file(); // parse
 
 		ParseTreeWalker walker = new ParseTreeWalker();
-		SourceLoader sourceLoader = new SourceLoader(tokens);
-		walker.walk(sourceLoader, tree);
+		TemplateLoader templateLoader = new TemplateLoader();
+		walker.walk(templateLoader, tree);
 
-		return sourceLoader.getRewriter().getText();
+		return templateLoader.getSyncAttributes();
 	}
 }
