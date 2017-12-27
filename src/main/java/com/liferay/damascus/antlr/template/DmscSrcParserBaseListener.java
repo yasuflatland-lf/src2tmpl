@@ -107,6 +107,18 @@ public class DmscSrcParserBaseListener implements DmscSrcParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSavedata(DmscSrcParser.SavedataContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEndoffile(DmscSrcParser.EndoffileContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEndoffile(DmscSrcParser.EndoffileContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
