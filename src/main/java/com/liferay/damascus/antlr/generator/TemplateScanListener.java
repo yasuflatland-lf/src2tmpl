@@ -1,8 +1,6 @@
-package com.liferay.damascus.antlr.scanner;
+package com.liferay.damascus.antlr.generator;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
@@ -12,21 +10,21 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Template Loader
+ * Template Scan Listener
  * 
- * Scanning a template file to correct replace contents for template generator
+ * Scanning a target template file to correct replace contents for template generator
  * 
  * @author Yasuyuki Takeo
  *
  */
 @Slf4j
-public class TemplateLoader extends DmscSrcParserExListener {
+public class TemplateScanListener extends DmscSrcParserExListener {
 
 	/**
 	 * Constructor
 	 */
-	public TemplateLoader() {
-		syncAttributes = new ConcurrentHashMap<>();
+	public TemplateScanListener() {
+		targetTemplateContext = new TemplateContext();
 	}
 
 	/**
@@ -40,7 +38,7 @@ public class TemplateLoader extends DmscSrcParserExListener {
 
 				currentId = stripQuotations(attribute.STRING().getText());
 
-				syncAttributes.put(currentId, "");
+				targetTemplateContext.setSyncAttribute(currentId, "");
 				return;
 			}
 		}
@@ -60,12 +58,12 @@ public class TemplateLoader extends DmscSrcParserExListener {
 			log.debug("ID <" + currentId + ">");
 			log.debug("Text <<< " + ctx.getText() + ">>>");
 		}
-		syncAttributes.put(currentId, ctx.getText());
+		targetTemplateContext.setSyncAttribute(currentId, ctx.getText());
 	}
 
 
 	protected String currentId = "";
 
 	@Getter
-	protected Map<String, String> syncAttributes;
+	protected TemplateContext targetTemplateContext;
 }

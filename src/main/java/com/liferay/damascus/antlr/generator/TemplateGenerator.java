@@ -3,7 +3,6 @@ package com.liferay.damascus.antlr.generator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -16,97 +15,76 @@ import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Template Generator
  * 
  * @author Yasuyuki Takeo
  *
  */
-@Slf4j
 public class TemplateGenerator {
 
 	/**
-	 * Template Generator
+	 * Constructor
 	 * 
 	 * @param contentsFile
-	 * @param contentsIdMap
-	 * @return parsed strings
-	 * @throws IOException
+	 * @param targetTemplateContext
 	 */
-	public String generator(File contentsFile, Map<String, String> contentsIdMap) throws IOException {
-		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return generator(contents,contentsIdMap);
+	public TemplateGenerator(File contentsFile, TemplateContext targetTemplateContext) {
+		this.contentsFile = contentsFile;
+		this.targetTemplateContext = targetTemplateContext;
 	}
 
 	/**
 	 * Template Generator
 	 * 
-	 * @param contents
-	 * @param contentsIdMap
-	 * @return parsed strings
+	 * @return processed string
+	 * @throws IOException
 	 */
-	public String generator(String contents, Map<String, String> contentsIdMap) {
-		
+	public String generator() throws IOException {
+		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
 		// Always get data from a file
-		return getSourceLoader(contents, contentsIdMap, false).getRewriter().getText();
+		return getSourceLoader(contents, targetTemplateContext).getRewriter().getText();
+	}
+
+	/**
+	 * Get Source Context
+	 * 
+	 * @return TemplateContext
+	 * @throws IOException
+	 */
+	public TemplateContext getSourceContext() throws IOException {
+		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+		return getSourceLoader(contents, targetTemplateContext).getSourceContext();
 	}
 
 	/**
 	 * Get Source Loader
 	 * 
-	 * @param contentsFile
-	 * @param contentsIdMap
-	 * @param cache
-	 * @return
-	 * @throws IOException
-	 */
-	public SourceLoader getSourceLoader(File contentsFile, Map<String, String> contentsIdMap, boolean cache) 
-			throws IOException {
-		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return getSourceLoader(contents,contentsIdMap,cache);
-	
-	}
-	
-	/**
-	 * Get Source Loader
-	 * 
 	 * @param contents
 	 * @param contentsIdMap
-	 * @param use cache if it's true or process file
-	 * @return
+	 * @return SourceLoader instance
 	 */
-	public SourceLoader getSourceLoader(String contents, Map<String, String> contentsIdMap, boolean cache) {
-		
-		// Check cache
-		if(cache) {
-			if(null != _sourceLoader) {
-				if(log.isDebugEnabled()) {
-					log.debug("cache returned");
-				}
-				return _sourceLoader;
-			}
-		}
-		
+	protected SourceConvertListener getSourceLoader(String contents, TemplateContext targetTemplateContext) {
+
 		CharStream input = CharStreams.fromString(contents);
 		DmscSrcLexer lexer = new DmscSrcLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		DmscSrcParser parser = new DmscSrcParser(tokens);
-		
+
 		// Apply custom listener
-        parser.removeErrorListeners(); // remove ConsoleErrorListener
-        parser.addErrorListener(new UnderlineListener());
-        
+		parser.removeErrorListeners(); // remove ConsoleErrorListener
+		parser.addErrorListener(new UnderlineListener());
+
 		ParseTree tree = parser.file(); // parse
 
 		ParseTreeWalker walker = new ParseTreeWalker();
-		
-		_sourceLoader = new SourceLoader(tokens, contentsIdMap);
-		walker.walk(_sourceLoader, tree);
-		
-		return _sourceLoader;
+
+		SourceConvertListener sourceLoader = new SourceConvertListener(tokens, targetTemplateContext);
+		walker.walk(sourceLoader, tree);
+
+		return sourceLoader;
 	}
-	
-	protected SourceLoader _sourceLoader = null;
+
+	protected File contentsFile;
+	protected TemplateContext targetTemplateContext;
 }

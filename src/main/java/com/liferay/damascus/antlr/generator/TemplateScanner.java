@@ -1,9 +1,8 @@
-package com.liferay.damascus.antlr.scanner;
+package com.liferay.damascus.antlr.generator;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -19,7 +18,7 @@ import com.liferay.damascus.antlr.template.DmscSrcParser;
 /**
  * Template Scanner
  * 
- * Scanning a template and extract contents to swap in a source where surrounded
+ * Scanning a target template and extract contents to swap in a source where surrounded
  * by sync tags.
  * 
  * @author Yasuyuki Takeo
@@ -28,24 +27,33 @@ import com.liferay.damascus.antlr.template.DmscSrcParser;
 public class TemplateScanner {
 
 	/**
+	 * Constructor
+	 * 
+	 * @param contentsFile
+	 */
+	public TemplateScanner(File contentsFile) {
+		this.contentsFile = contentsFile;
+	}
+	
+	/**
 	 * Get Contents Map
 	 * 
 	 * @param contentsFile
 	 * @return parsed strings
 	 * @throws IOException
 	 */
-	static public Map<String, String> getContentsMap(File contentsFile) throws IOException {
+	public TemplateContext getTargetTemplateContext() throws IOException {
 		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return getContentsMap(contents);
+		return getTemplateLoader(contents).getTargetTemplateContext();
 	}
 
 	/**
-	 * Get Contents Map
+	 * Get Template Loader
 	 * 
 	 * @param contents
 	 * @return id and contents map for generator
 	 */
-	static public Map<String, String> getContentsMap(String contents) {
+	protected TemplateScanListener getTemplateLoader(String contents) {
 
 		CharStream input = CharStreams.fromString(contents);
 		DmscSrcLexer lexer = new DmscSrcLexer(input);
@@ -59,9 +67,11 @@ public class TemplateScanner {
 		ParseTree tree = parser.file(); // parse
 
 		ParseTreeWalker walker = new ParseTreeWalker();
-		TemplateLoader templateLoader = new TemplateLoader();
+		TemplateScanListener templateLoader = new TemplateScanListener();
 		walker.walk(templateLoader, tree);
 
-		return templateLoader.getSyncAttributes();
+		return templateLoader;
 	}
+	
+	protected File contentsFile;
 }

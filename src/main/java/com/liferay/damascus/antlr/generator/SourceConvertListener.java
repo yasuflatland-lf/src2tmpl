@@ -1,8 +1,6 @@
 package com.liferay.damascus.antlr.generator;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
@@ -12,16 +10,16 @@ import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * Source Loader
+ * Source Convert Listener
+ * 
+ * Listner for converting source files into templates. 
  * 
  * @author Yasuyuki Takeo
  *
  */
-@Slf4j
-public class SourceLoader extends DmscSrcParserExListener {
+public class SourceConvertListener extends DmscSrcParserExListener {
 
 	/**
 	 * Constructor
@@ -29,15 +27,11 @@ public class SourceLoader extends DmscSrcParserExListener {
 	 * @param tokens
 	 * @param contentsIdMap
 	 */
-	public SourceLoader(TokenStream tokens, Map<String, String> contentsIdMap) {
-		this.contentsIdMap = new ConcurrentHashMap<String, String>();
-		if(null != contentsIdMap) {
-			this.contentsIdMap = contentsIdMap;
-		}
-		
+	public SourceConvertListener(TokenStream tokens, TemplateContext targetTemplateContext) {
+
 		rewriter = new TokenStreamRewriter(tokens);
-		rootAttributes = new ConcurrentHashMap<>();
-		syncAttributes = new ConcurrentHashMap<>();
+		sourceContext = new TemplateContext();
+		this.targetTemplateContext = targetTemplateContext;
 	}
 
 	/**
@@ -48,10 +42,10 @@ public class SourceLoader extends DmscSrcParserExListener {
 
 		List<AttributeContext> attributes = ctx.attribute();
 		for (AttributeContext attribute : attributes) {
-			
+
 			String value = stripQuotations(attribute.STRING().getText());
-			
-			rootAttributes.put(attribute.Name().getText(), value);
+
+			sourceContext.setRootAttribute(attribute.Name().getText(), value);
 		}
 	}
 
@@ -66,36 +60,29 @@ public class SourceLoader extends DmscSrcParserExListener {
 
 				String currentId = stripQuotations(attribute.STRING().getText());
 
-				syncAttributes.put(currentId, "");
+				sourceContext.setSyncAttribute(currentId, "");
 				return;
 			}
 		}
 	}
 
 	/**
-	 * Get Sync End Element
-	 */
-	@Override
-	public void exitSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx) {
-	}
-	
-	/**
 	 * Get text data between sync tag
 	 */
-	@Override 
+	@Override
 	public void exitSavedata(DmscSrcParser.SavedataContext ctx) {
 		// Delete contents between tags
-		//rewriter.delete(ctx.start);
+		// rewriter.delete(ctx.start);
 		// Replace contents here
 		// rewriter.insertAfter(ctx.start, "replace here");
-	}	
-	
+	}
+
 	@Getter
 	protected TokenStreamRewriter rewriter;
 
 	@Getter
-	protected Map<String, String> rootAttributes;
+	protected TemplateContext sourceContext;
 
-	protected Map<String, String> contentsIdMap;
-	protected Map<String, String> syncAttributes;
+	protected TemplateContext targetTemplateContext;
+
 }

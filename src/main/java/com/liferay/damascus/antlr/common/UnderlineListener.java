@@ -35,6 +35,7 @@ public class UnderlineListener extends BaseErrorListener {
 			System.err.println("Line index is overrun. Maybe dmsc tags are not mached.");
 			return;
 		}
+		
 		String errorLine = lines[line - 1];
 		System.err.println(errorLine);
 		for (int i = 0; i < charPositionInLine; i++)
@@ -45,6 +46,7 @@ public class UnderlineListener extends BaseErrorListener {
 			for (int i = start; i <= stop; i++)
 				System.err.print("^");
 		}
+		
 		System.err.println();
 	}
 }

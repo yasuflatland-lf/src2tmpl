@@ -1,8 +1,10 @@
-package com.liferay.damascus.antlr.scanner
+package com.liferay.damascus.antlr.generator
 
 import java.nio.charset.Charset
 
 import org.apache.commons.io.FileUtils
+
+import com.liferay.damascus.antlr.generator.TemplateScanner
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -99,7 +101,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
 		def compfilePath = new File(TEMP_DIR + TEST_DIR + DS + compFileName)
 		
-		def result = TemplateScanner.getContentsMap(filePath)
+		TemplateScanner ts = new TemplateScanner(filePath)
+		def result = ts.getTargetTemplateContext().getSyncAttributes()
 		
 		String contents = FileUtils.readFileToString(compfilePath, Charset.defaultCharset());
 		

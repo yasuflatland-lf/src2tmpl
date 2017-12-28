@@ -1,11 +1,11 @@
 package com.liferay.damascus.antlr.generator
 
-import spock.lang.Specification
-import spock.lang.Unroll
-
 import java.nio.charset.Charset
 
 import org.apache.commons.io.FileUtils
+
+import spock.lang.Specification
+import spock.lang.Unroll
 
 class TemplateGeneratorTest extends Specification {
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -64,8 +64,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		def result = tg.generator(filePath,null)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		def result = tg.generator()
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		
@@ -120,8 +120,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		def result = tg.generator(filePath,null)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		def result = tg.generator()
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -177,8 +177,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		def result = tg.generator(filePath,null)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		def result = tg.generator()
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -235,8 +235,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		def result = tg.generator(filePath,null)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		def result = tg.generator()
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -406,8 +406,8 @@ public class JarUtil {
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		def result = tg.generator(filePath,null)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		def result = tg.generator()
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		
@@ -449,9 +449,10 @@ TEST
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator()
-		SourceLoader sl = tg.getSourceLoader(filePath,null,false)
-		def rootAttr = sl.getRootAttributes();
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		tg.generator()
+		TemplateContext sc = tg.getSourceContext()
+		def rootAttr = sc.getRootAttributes()
 		
 		then:
 		true == filePath.exists()
