@@ -8,12 +8,24 @@ import org.antlr.v4.runtime.Token;
 
 public class UnderlineListener extends BaseErrorListener {
 
+	/**
+	 * Syntax Error method
+	 */
 	public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
 			String msg, RecognitionException e) {
 		System.err.println("line " + line + ":" + charPositionInLine + " " + msg);
 		underlineError(recognizer, (Token) offendingSymbol, line, charPositionInLine);
 	}
 
+	/**
+	 * Under Line error generator
+	 * 
+	 * When a error occurs, this method decorate the error with hat.
+	 * @param recognizer
+	 * @param offendingToken
+	 * @param line
+	 * @param charPositionInLine
+	 */
 	protected void underlineError(Recognizer recognizer, Token offendingToken, int line, int charPositionInLine) {
 		CommonTokenStream tokens = (CommonTokenStream) recognizer.getInputStream();
 		String input = tokens.getTokenSource().getInputStream().toString();

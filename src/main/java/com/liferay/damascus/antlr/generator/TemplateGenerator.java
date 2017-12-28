@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -53,6 +52,22 @@ public class TemplateGenerator {
 		// Always get data from a file
 		return getSourceLoader(contents, contentsIdMap, false).getRewriter().getText();
 	}
+
+	/**
+	 * Get Source Loader
+	 * 
+	 * @param contentsFile
+	 * @param contentsIdMap
+	 * @param cache
+	 * @return
+	 * @throws IOException
+	 */
+	public SourceLoader getSourceLoader(File contentsFile, Map<String, String> contentsIdMap, boolean cache) 
+			throws IOException {
+		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+		return getSourceLoader(contents,contentsIdMap,cache);
+	
+	}
 	
 	/**
 	 * Get Source Loader
@@ -62,7 +77,7 @@ public class TemplateGenerator {
 	 * @param use cache if it's true or process file
 	 * @return
 	 */
-	protected SourceLoader getSourceLoader(String contents, Map<String, String> contentsIdMap, boolean cache) {
+	public SourceLoader getSourceLoader(String contents, Map<String, String> contentsIdMap, boolean cache) {
 		
 		// Check cache
 		if(cache) {

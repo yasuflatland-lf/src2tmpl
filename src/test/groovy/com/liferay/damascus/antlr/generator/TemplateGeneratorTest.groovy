@@ -416,6 +416,51 @@ public class JarUtil {
 		contents == result
 	}
 	
+	@Unroll("Root attribute fetch test")
+	def "Root attribute fetch test" () {
+		when:
+		def testFileName = "test.jsp"
+		
+		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+		tf.dir(TEST_DIR) {
+			file(testFileName) {
+				withWriter('UTF-8') { writer ->
+					writer.write '''
+<%--
+<dmsc:root id="hoge" 
+templateFileName="Portlet_XXXXWEB_Test.java.ftl"
+version="70"
+templateDirPath="/hoge/fuga/aaa" />
+--%>
+<%
+Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
+%>
+
+<%
+<dmsc:sync id="aaa" >
+%>
+TEST
+<%
+</dmsc:sync>
+%>
+'''.stripIndent()
+				}
+			}
+		}
+		
+		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+		TemplateGenerator tg = new TemplateGenerator()
+		SourceLoader sl = tg.getSourceLoader(filePath,null,false)
+		def rootAttr = sl.getRootAttributes();
+		
+		then:
+		true == filePath.exists()
+		"hoge" == rootAttr.get("id")
+		"Portlet_XXXXWEB_Test.java.ftl" == rootAttr.get("templateFileName")
+		"70" == rootAttr.get("version")
+		"/hoge/fuga/aaa" == rootAttr.get("templateDirPath")
+	}
+	
 	def setup() {
 		FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
 		System.setOut(new PrintStream(outContent));
