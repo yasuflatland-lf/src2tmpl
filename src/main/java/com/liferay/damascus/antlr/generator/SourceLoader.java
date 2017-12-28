@@ -23,8 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SourceLoader extends DmscSrcParserExListener {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param tokens
+	 * @param contentsIdMap
+	 */
 	public SourceLoader(TokenStream tokens, Map<String, String> contentsIdMap) {
-		this.contentsIdMap = contentsIdMap;
+		this.contentsIdMap = new ConcurrentHashMap<String, String>();
+		if(null != contentsIdMap) {
+			this.contentsIdMap = contentsIdMap;
+		}
 		
 		rewriter = new TokenStreamRewriter(tokens);
 		rootAttributes = new ConcurrentHashMap<>();
@@ -39,7 +48,10 @@ public class SourceLoader extends DmscSrcParserExListener {
 
 		List<AttributeContext> attributes = ctx.attribute();
 		for (AttributeContext attribute : attributes) {
-			rootAttributes.put(attribute.Name().getText(), attribute.STRING().getText());
+			
+			String value = stripQuotations(attribute.STRING().getText());
+			
+			rootAttributes.put(attribute.Name().getText(), value);
 		}
 	}
 
@@ -81,7 +93,9 @@ public class SourceLoader extends DmscSrcParserExListener {
 	@Getter
 	protected TokenStreamRewriter rewriter;
 
-	protected Map<String, String> contentsIdMap;
+	@Getter
 	protected Map<String, String> rootAttributes;
+
+	protected Map<String, String> contentsIdMap;
 	protected Map<String, String> syncAttributes;
 }

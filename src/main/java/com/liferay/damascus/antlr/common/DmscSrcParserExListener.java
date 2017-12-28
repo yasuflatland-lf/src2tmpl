@@ -4,6 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.liferay.damascus.antlr.template.DmscSrcParserBaseListener;
 
+/**
+ * Common Listener class base
+ *  
+ * @author Yasuyuki Takeo
+ *
+ */
 public class DmscSrcParserExListener extends DmscSrcParserBaseListener {
 	
 	/**

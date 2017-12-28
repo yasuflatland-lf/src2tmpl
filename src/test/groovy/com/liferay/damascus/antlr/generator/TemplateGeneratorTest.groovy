@@ -64,7 +64,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def result = TemplateGenerator.generator(filePath)
+		TemplateGenerator tg = new TemplateGenerator()
+		def result = tg.generator(filePath,null)
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		
@@ -119,7 +120,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def result = TemplateGenerator.generator(filePath)
+		TemplateGenerator tg = new TemplateGenerator()
+		def result = tg.generator(filePath,null)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -175,7 +177,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def result = TemplateGenerator.generator(filePath)
+		TemplateGenerator tg = new TemplateGenerator()
+		def result = tg.generator(filePath,null)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -232,7 +235,8 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def result = TemplateGenerator.generator(filePath)
+		TemplateGenerator tg = new TemplateGenerator()
+		def result = tg.generator(filePath,null)
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		def error_str = errContent.toString()
 		
@@ -402,7 +406,8 @@ public class JarUtil {
 		}
 		
 		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def result = TemplateGenerator.generator(filePath)
+		TemplateGenerator tg = new TemplateGenerator()
+		def result = tg.generator(filePath,null)
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		

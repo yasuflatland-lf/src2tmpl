@@ -3,6 +3,7 @@ package com.liferay.damascus.antlr.generator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.antlr.v4.runtime.CharStream;
@@ -16,33 +17,62 @@ import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Template Generator
  * 
  * @author Yasuyuki Takeo
  *
  */
+@Slf4j
 public class TemplateGenerator {
 
 	/**
 	 * Template Generator
 	 * 
 	 * @param contentsFile
+	 * @param contentsIdMap
 	 * @return parsed strings
 	 * @throws IOException
 	 */
-	static public String generator(File contentsFile) throws IOException {
+	public String generator(File contentsFile, Map<String, String> contentsIdMap) throws IOException {
 		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return generator(contents);
+		return generator(contents,contentsIdMap);
 	}
 
 	/**
 	 * Template Generator
 	 * 
 	 * @param contents
+	 * @param contentsIdMap
 	 * @return parsed strings
 	 */
-	static public String generator(String contents) {
+	public String generator(String contents, Map<String, String> contentsIdMap) {
+		
+		// Always get data from a file
+		return getSourceLoader(contents, contentsIdMap, false).getRewriter().getText();
+	}
+	
+	/**
+	 * Get Source Loader
+	 * 
+	 * @param contents
+	 * @param contentsIdMap
+	 * @param use cache if it's true or process file
+	 * @return
+	 */
+	protected SourceLoader getSourceLoader(String contents, Map<String, String> contentsIdMap, boolean cache) {
+		
+		// Check cache
+		if(cache) {
+			if(null != _sourceLoader) {
+				if(log.isDebugEnabled()) {
+					log.debug("cache returned");
+				}
+				return _sourceLoader;
+			}
+		}
 		
 		CharStream input = CharStreams.fromString(contents);
 		DmscSrcLexer lexer = new DmscSrcLexer(input);
@@ -56,9 +86,12 @@ public class TemplateGenerator {
 		ParseTree tree = parser.file(); // parse
 
 		ParseTreeWalker walker = new ParseTreeWalker();
-		SourceLoader sourceLoader = new SourceLoader(tokens, new ConcurrentHashMap<>());
-		walker.walk(sourceLoader, tree);
-
-		return sourceLoader.getRewriter().getText();
+		
+		_sourceLoader = new SourceLoader(tokens, contentsIdMap);
+		walker.walk(_sourceLoader, tree);
+		
+		return _sourceLoader;
 	}
+	
+	protected SourceLoader _sourceLoader = null;
 }
