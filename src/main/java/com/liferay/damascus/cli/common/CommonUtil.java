@@ -1,6 +1,7 @@
 package com.liferay.damascus.cli.common;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Common Util
  * 
- * This need to be merged into Damascus CommonUtil.
+ * TODO:This need to be merged into Damascus CommonUtil.
  * 
  * @author yasuflatland
  *
@@ -55,5 +56,15 @@ public class CommonUtil {
 					replacement.getValue());
 		}
 		return converted;
-	}	
+	}
+
+	/**
+	 * Comma separated strings to List
+	 *
+	 * @param source comma separated strings
+	 * @return String List
+     */
+	static public List<String> stringToList(String source) {
+		return Arrays.asList(source.split("\\s*,\\s*"));
+	}
 }

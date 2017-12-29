@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Template Generator Utility class
+ * Template Generator Validator class
  *
  * @author Yasuyuki Takeo
  */
-public class TemplateGeneratorUtil {
+public class TemplateGenerateValidator {
 
     /**
      * Root Attributes validator
@@ -24,17 +24,6 @@ public class TemplateGeneratorUtil {
 
         Map<String, String> rootAttributes = sourceContext.getRootAttributes();
         List<String>        errors         = new ArrayList<String>();
-
-        // ID is required
-        if (!rootAttributes.containsKey(TemplateContext.ATTR_ID)) {
-            errors.add(TemplateContext.ATTR_ID + " is missing");
-        } else {
-            String attrId = rootAttributes.get(TemplateContext.ATTR_ID);
-
-            if (attrId.equals("")) {
-                errors.add(TemplateContext.ATTR_ID + " is empty. must be configured");
-            }
-        }
 
         // Template Name is required
         if (!rootAttributes.containsKey(TemplateContext.ATTR_TEMPLATE_NAME)) {

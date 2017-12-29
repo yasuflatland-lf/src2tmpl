@@ -2,6 +2,7 @@ package com.liferay.damascus.antlr.generator;
 
 import java.util.List;
 
+import com.liferay.damascus.antlr.common.TemplateGenerateValidator;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 
@@ -10,6 +11,7 @@ import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
 
 import lombok.Getter;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 /**
  * Source Convert Listener
@@ -23,10 +25,10 @@ public class SourceConvertListener extends DmscSrcParserExListener {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param tokens
-	 * @param contentsIdMap
-	 */
+	 * @param targetTemplateContext
+     */
 	public SourceConvertListener(TokenStream tokens, TemplateContext targetTemplateContext) {
 
 		rewriter = new TokenStreamRewriter(tokens);
@@ -49,6 +51,12 @@ public class SourceConvertListener extends DmscSrcParserExListener {
 		}
 		// Root tag exist flag
 		sourceContext.setRootTagExist(true);
+
+//        List<String> errors = TemplateGenerateValidator.rootValidator(sourceContext);
+//        if(0 < errors.size()) {
+//            throw new ParseCancellationException("parse error");
+//        }
+
 	}
 
 	/**
@@ -58,7 +66,7 @@ public class SourceConvertListener extends DmscSrcParserExListener {
 	public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
 		List<AttributeContext> attributes = ctx.attribute();
 		for (AttributeContext attribute : attributes) {
-			if (ID.equals(attribute.Name().getText())) {
+			if (TemplateContext.ATTR_ID.equals(attribute.Name().getText())) {
 
 				String currentId = stripQuotations(attribute.STRING().getText());
 

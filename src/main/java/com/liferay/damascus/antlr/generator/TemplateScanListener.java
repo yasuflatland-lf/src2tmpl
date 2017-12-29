@@ -32,7 +32,7 @@ public class TemplateScanListener extends DmscSrcParserExListener {
     public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
         List<AttributeContext> attributes = ctx.attribute();
         for (AttributeContext attribute : attributes) {
-            if (ID.equals(attribute.Name().getText())) {
+            if (TemplateContext.ATTR_ID.equals(attribute.Name().getText())) {
 
                 currentId = stripQuotations(attribute.STRING().getText());
 

@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 
 /**
  * Template Scanner
- * <p/>
+ * <p>
  * Scanning a target template and extract contents to swap in a source where surrounded
  * by sync tags.
  *
