@@ -23,8 +23,19 @@ class TemplateGeneratorUtilTest extends Specification {
         result.size == result_size
 
         where:
-        attributes                                               | result_size
-        ["id": "hoge", "templateName": "dummy", "version": "70"] | 0
+        attributes                                                                        | result_size | _
+        ["id": "hoge", "templateName": "dummy", "version": "70"]                          | 0           | _ //success
+        ["id": "hoge", "templateName": "dummy", "templateDir": "/bar"]                    | 0           | _ //success
+        ["id": "hoge", "templateName": "dummy", "templateDir": "./bar"]                   | 0           | _ //success
+        ["id": "hoge", "templateName": "dummy", "version": "70", "templateDir": "./bar"]  | 0           | _ //success
+        ["id": "hoge", "templateName": "dummy", "version": "70", "templateDir": "../foo"] | 0           | _ //success
+        ["id": "", "templateName": "dummy", "templateDir": "./bar"]                       | 1           | _ //Error
+        ["id": "", "templateName": "", "templateDir": "./bar"]                            | 2           | _ //Error
+        ["id": "", "templateName": "", "templateDir": "../foo"]                           | 3           | _ //Error
+        ["id": "hoge", "templateName": "dummy", "templateDir": "../foo"]                  | 1           | _ //Error
+        ["id": "hoge", "templateName": "", "templateDir": ".bar"]                         | 1           | _ //Error
+        []                                                                                | 3           | _ //Error
+
     }
 
     @Unroll("syncValidator test")
@@ -42,7 +53,9 @@ class TemplateGeneratorUtilTest extends Specification {
         result.size == result_size
 
         where:
-        attributes     | result_size
-        ["id": "hoge"] | 0
+        attributes     | result_size | _
+        ["id": "hoge"] | 0           | _ // success
+        ["id": ""]     | 1           | _ // Error
+        []             | 1           | _ // Error
     }
 }
