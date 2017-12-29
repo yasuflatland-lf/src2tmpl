@@ -1,32 +1,30 @@
 package com.liferay.damascus.antlr.generator
 
-import java.nio.charset.Charset
-
-import org.apache.commons.io.FileUtils
-
 import com.liferay.damascus.cli.common.CommonUtil
-
+import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.nio.charset.Charset
+
 class TemplateGeneratorTest extends Specification {
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	
-	static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
-	static final String TEST_DIR = "testdir"
-	static final String DS = "/"
-	
-	@Unroll("smoke test (jsp file)")
-	def "smoke test (jsp file)" () {
-		when:
-		def testFileName = "test.jsp"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
+    static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
+    static final String TEST_DIR = "testdir"
+    static final String DS = "/"
+
+    @Unroll("smoke test (jsp file)")
+    def "smoke test (jsp file)"() {
+        when:
+        def testFileName = "test.jsp"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%--
 <dmsc:root id="hoge" />
 --%>
@@ -61,31 +59,31 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 </dmsc:sync>
 %>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		def result = tg.generator()
-		
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		
-		then:
-		true == filePath.exists()
-		contents == result
-	}
+                }
+            }
+        }
 
-	@Unroll("root tag missing. must be error")
-	def "root tag missing. must be error" () {
-		when:
-		def testFileName = "test.js"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        def result = tg.generator()
+
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+
+        then:
+        true == filePath.exists()
+        contents == result
+    }
+
+    @Unroll("root tag missing. must be error")
+    def "root tag missing. must be error"() {
+        when:
+        def testFileName = "test.js"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%
 Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 %>
@@ -117,32 +115,32 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 </dmsc:sync>
 %>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		def result = tg.generator()
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		def error_str = errContent.toString()
-		
-		then:
-		true == filePath.exists()
-		contents == result
-		error_str.contains('root must be decleared first')
-	}
+                }
+            }
+        }
 
-	@Unroll("sync start tag missing. must be error")
-	def "sync start tag missing. must be error" () {
-		when:
-		def testFileName = "test.js"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        def result = tg.generator()
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        def error_str = errContent.toString()
+
+        then:
+        true == filePath.exists()
+        contents == result
+        error_str.contains('root must be decleared first')
+    }
+
+    @Unroll("sync start tag missing. must be error")
+    def "sync start tag missing. must be error"() {
+        when:
+        def testFileName = "test.js"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%--
 <dmsc:root id="hoge" />
 --%>
@@ -174,32 +172,32 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 </dmsc:sync>
 %>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		def result = tg.generator()
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		def error_str = errContent.toString()
-		
-		then:
-		true == filePath.exists()
-		contents == result
-		error_str.contains('dmsc:sync start tag is missing.')
-	}
-	
-	@Unroll("sync end tag missing. must be error")
-	def "sync end tag missing. must be error" () {
-		when:
-		def testFileName = "test.js"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+                }
+            }
+        }
+
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        def result = tg.generator()
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        def error_str = errContent.toString()
+
+        then:
+        true == filePath.exists()
+        contents == result
+        error_str.contains('dmsc:sync start tag is missing.')
+    }
+
+    @Unroll("sync end tag missing. must be error")
+    def "sync end tag missing. must be error"() {
+        when:
+        def testFileName = "test.js"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%--
 <dmsc:root id="hoge" />
 --%>
@@ -232,32 +230,32 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
     </c:otherwise>
 </c:choose>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		def result = tg.generator()
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		def error_str = errContent.toString()
-		
-		then:
-		true == filePath.exists()
-		contents == result
-		error_str.contains('Line index is overrun')
-	}
-	
-	@Unroll("smoke test (java file)")
-	def "smoke test (java file)" () {
-		when:
-		def testFileName = "test.java"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+                }
+            }
+        }
+
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        def result = tg.generator()
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        def error_str = errContent.toString()
+
+        then:
+        true == filePath.exists()
+        contents == result
+        error_str.contains('Line index is overrun')
+    }
+
+    @Unroll("smoke test (java file)")
+    def "smoke test (java file)"() {
+        when:
+        def testFileName = "test.java"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -403,31 +401,31 @@ public class JarUtil {
 
 }
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		def result = tg.generator()
-		
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		
-		then:
-		true == filePath.exists()
-		contents == result
-	}
-	
-	@Unroll("Root attribute fetch test")
-	def "Root attribute fetch test" () {
-		when:
-		def testFileName = "test.jsp"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+                }
+            }
+        }
+
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        def result = tg.generator()
+
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+
+        then:
+        true == filePath.exists()
+        contents == result
+    }
+
+    @Unroll("Root attribute fetch test")
+    def "Root attribute fetch test"() {
+        when:
+        def testFileName = "test.jsp"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%--
 <dmsc:root id="hoge" 
 templateFileName="Portlet_XXXXWEB_Test.java.ftl"
@@ -446,34 +444,34 @@ TEST
 </dmsc:sync>
 %>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		tg.generator()
-		TemplateContext sc = tg.getSourceContext()
-		def rootAttr = sc.getRootAttributes()
-		
-		then:
-		true == filePath.exists()
-		"hoge" == rootAttr.get("id")
-		"Portlet_XXXXWEB_Test.java.ftl" == rootAttr.get("templateFileName")
-		"70" == rootAttr.get("version")
-		"/hoge/fuga/aaa" == rootAttr.get("templateDirPath")
-	}
-	
-	@Unroll("replaceKeywords Test")
-	def "replaceKeywords Test" () {
-		when:
-		def testFileName = "dummy.text"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''package com.liferay.test.service.impl;
+                }
+            }
+        }
+
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+        tg.generator()
+        TemplateContext sc = tg.getSourceContext()
+        def rootAttr = sc.getRootAttributes()
+
+        then:
+        true == filePath.exists()
+        "hoge" == rootAttr.get("id")
+        "Portlet_XXXXWEB_Test.java.ftl" == rootAttr.get("templateFileName")
+        "70" == rootAttr.get("version")
+        "/hoge/fuga/aaa" == rootAttr.get("templateDirPath")
+    }
+
+    @Unroll("replaceKeywords Test")
+    def "replaceKeywords Test"() {
+        when:
+        def testFileName = "dummy.text"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''package com.liferay.test.service.impl;
 /**
 * SampleSBLocalServiceImpl
 */
@@ -498,16 +496,16 @@ ThemeDisplay themeDisplay = (ThemeDisplay) request
 return entry;
 }
 }'''.stripIndent()
-				}
-			}
-		}
-		
-		def outputFileName = "output.txt"
-		
-		tf.dir(TEST_DIR) {
-			file(outputFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''package ${packageName}.service.impl;
+                }
+            }
+        }
+
+        def outputFileName = "output.txt"
+
+        tf.dir(TEST_DIR) {
+            file(outputFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''package ${packageName}.service.impl;
 /**
 * ${capFirstModel}LocalServiceImpl
 */
@@ -532,41 +530,41 @@ ThemeDisplay themeDisplay = (ThemeDisplay) request
 return entry;
 }
 }'''.stripIndent()
-				}
-			}
-		}
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def outPath = new File(TEMP_DIR + TEST_DIR + DS + outputFileName)
-		TemplateGenerator tg = new TemplateGenerator(filePath,null)
-		
-		def checkpattern = [
-				'com.liferay.test' : '${packageName}',
-				'SampleSB' : '${capFirstModel}',
-				'sampleSB' : '${uncapFirstModel}',
-				'samplesb' : '${lowercaseModel}',
-				'SAMPLESB' : '${uppercaseModel}',
-				'sample-sb' : '${snakecaseModel}'
-			]
-		
-		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-		String expected = FileUtils.readFileToString(outPath, Charset.defaultCharset());
-		def result = CommonUtil.replaceKeywords(contents,checkpattern)
-		//FileUtils.writeStringToFile( outPath, result, Charset.defaultCharset());
-		
-		then:
-		true == outPath.exists()
-		result == expected
-		
-	}
-	
-	def setup() {
-		FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
-	}
-	
-	def cleanup() {
-		System.setOut(null);
-		System.setErr(null);
-	}
+                }
+            }
+        }
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        def outPath = new File(TEMP_DIR + TEST_DIR + DS + outputFileName)
+        TemplateGenerator tg = new TemplateGenerator(filePath, null)
+
+        def checkpattern = [
+                'com.liferay.test': '${packageName}',
+                'SampleSB'        : '${capFirstModel}',
+                'sampleSB'        : '${uncapFirstModel}',
+                'samplesb'        : '${lowercaseModel}',
+                'SAMPLESB'        : '${uppercaseModel}',
+                'sample-sb'       : '${snakecaseModel}'
+        ]
+
+        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String expected = FileUtils.readFileToString(outPath, Charset.defaultCharset());
+        def result = CommonUtil.replaceKeywords(contents, checkpattern)
+        //FileUtils.writeStringToFile( outPath, result, Charset.defaultCharset());
+
+        then:
+        true == outPath.exists()
+        result == expected
+
+    }
+
+    def setup() {
+        FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
+    }
+
+    def cleanup() {
+        System.setOut(null);
+        System.setErr(null);
+    }
 }

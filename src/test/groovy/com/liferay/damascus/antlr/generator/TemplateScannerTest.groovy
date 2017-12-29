@@ -1,32 +1,29 @@
 package com.liferay.damascus.antlr.generator
 
-import java.nio.charset.Charset
-
 import org.apache.commons.io.FileUtils
-
-import com.liferay.damascus.antlr.generator.TemplateScanner
-
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.nio.charset.Charset
+
 class TemplateScannerTest extends Specification {
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	
-	static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
-	static final String TEST_DIR = "testdir"
-	static final String DS = "/"
-	
-	@Unroll("smoke test (jsp file)")
-	def "smoke test (jsp file)" () {
-		when:
-		def testFileName = "test.jsp"
-		
-		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(testFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
+    static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
+    static final String TEST_DIR = "testdir"
+    static final String DS = "/"
+
+    @Unroll("smoke test (jsp file)")
+    def "smoke test (jsp file)"() {
+        when:
+        def testFileName = "test.jsp"
+
+        final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(testFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 <%--
 <dmsc:root id="hoge" />
 --%>
@@ -61,18 +58,18 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 </dmsc:sync>
 %>
 '''.stripIndent()
-				}
-			}
-		}
-		
-		
-		def compFileName = "comp.jsp"
-		
-		final FileTreeBuilder tfc = new FileTreeBuilder(new File(TEMP_DIR))
-		tf.dir(TEST_DIR) {
-			file(compFileName) {
-				withWriter('UTF-8') { writer ->
-					writer.write '''
+                }
+            }
+        }
+
+
+        def compFileName = "comp.jsp"
+
+        final FileTreeBuilder tfc = new FileTreeBuilder(new File(TEMP_DIR))
+        tf.dir(TEST_DIR) {
+            file(compFileName) {
+                withWriter('UTF-8') { writer ->
+                    writer.write '''
 %>
 <c:choose>
     <c:when test="<%= gadget == null %>">
@@ -95,31 +92,31 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         <liferay-util:include page="/gadget/view.jsp" servletContext="<%= application %>" />
     </c:otherwise>
 <%'''.stripIndent()
-				}
-			}
-		}
-		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-		def compfilePath = new File(TEMP_DIR + TEST_DIR + DS + compFileName)
-		
-		TemplateScanner ts = new TemplateScanner(filePath)
-		def result = ts.getTargetTemplateContext().getSyncAttributes()
-		
-		String contents = FileUtils.readFileToString(compfilePath, Charset.defaultCharset());
-		
-		then:
-		true == compfilePath.exists()
-		true == result.containsKey("hoge")
-		contents == result.get("hoge")
-	}
+                }
+            }
+        }
+        def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+        def compfilePath = new File(TEMP_DIR + TEST_DIR + DS + compFileName)
 
-	def setup() {
-		FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
-	}
-	
-	def cleanup() {
-		System.setOut(null);
-		System.setErr(null);
-	}
+        TemplateScanner ts = new TemplateScanner(filePath)
+        def result = ts.getTargetTemplateContext().getSyncAttributes()
+
+        String contents = FileUtils.readFileToString(compfilePath, Charset.defaultCharset());
+
+        then:
+        true == compfilePath.exists()
+        true == result.containsKey("hoge")
+        contents == result.get("hoge")
+    }
+
+    def setup() {
+        FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
+    }
+
+    def cleanup() {
+        System.setOut(null);
+        System.setErr(null);
+    }
 }
