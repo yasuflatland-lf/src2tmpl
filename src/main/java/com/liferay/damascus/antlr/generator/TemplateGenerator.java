@@ -3,6 +3,7 @@ package com.liferay.damascus.antlr.generator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -10,6 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
@@ -61,8 +63,8 @@ public class TemplateGenerator {
 	 * Get Source Loader
 	 * 
 	 * @param contents
-	 * @param contentsIdMap
-	 * @return SourceLoader instance
+	 * @param targetTemplateContext
+	 * @return
 	 */
 	protected SourceConvertListener getSourceLoader(String contents, TemplateContext targetTemplateContext) {
 
@@ -83,6 +85,39 @@ public class TemplateGenerator {
 		walker.walk(sourceLoader, tree);
 
 		return sourceLoader;
+	}
+
+	/**
+	 * Replace keywords in contents
+	 * 
+	 * @param contentsFile
+	 * @param replacements
+	 * @return
+	 * @throws IOException
+	 */
+	public String replaceKeywords(File contentsFile, Map<String, String> replacements) 
+			throws IOException {
+		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+		return replaceKeywords(contents, replacements);
+	}
+	
+	/**
+	 * Replace keywords in contents
+	 * 
+	 * @param contents
+	 * @param replacements
+	 * @return
+	 */
+	public String replaceKeywords(String contents, Map<String, String> replacements) {
+		String converted = contents;
+		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+			converted = 
+				StringUtils.replace(
+					converted,
+					replacement.getKey(),
+					replacement.getValue());
+		}
+		return converted;
 	}
 
 	protected File contentsFile;

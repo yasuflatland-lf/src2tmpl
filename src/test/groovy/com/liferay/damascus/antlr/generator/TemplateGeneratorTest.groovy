@@ -462,6 +462,101 @@ TEST
 		"/hoge/fuga/aaa" == rootAttr.get("templateDirPath")
 	}
 	
+	@Unroll("replaceKeywords Test")
+	def "replaceKeywords Test" () {
+		when:
+		def testFileName = "dummy.text"
+		
+		final FileTreeBuilder tf = new FileTreeBuilder(new File(TEMP_DIR))
+		tf.dir(TEST_DIR) {
+			file(testFileName) {
+				withWriter('UTF-8') { writer ->
+					writer.write '''package com.liferay.test.service.impl;
+/**
+* SampleSBLocalServiceImpl
+*/
+entry.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
+SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
+addEntryResources(entry, addGroupPermissions, addGuestPermissions);
+SampleSBActivityKeys.UPDATE_SAMPLESB
+//  test sample-sb
+}
+/**
+* Populate Model with values from a form
+*
+* @param request PortletRequest
+* @return SampleSB Object
+* @throws PortletException
+* @throws SampleSBValidateException
+*/
+public SampleSB getSampleSBFromRequest(
+long primaryKey, PortletRequest request) throws PortletException, SampleSBValidateException {
+ThemeDisplay themeDisplay = (ThemeDisplay) request
+.getAttribute(WebKeys.THEME_DISPLAY);
+return entry;
+}
+}'''.stripIndent()
+				}
+			}
+		}
+		
+		def outputFileName = "output.txt"
+		
+		tf.dir(TEST_DIR) {
+			file(outputFileName) {
+				withWriter('UTF-8') { writer ->
+					writer.write '''package ${packageName}.service.impl;
+/**
+* ${capFirstModel}LocalServiceImpl
+*/
+entry.setSamplesbText(ParamUtil.getString(request, "${lowercaseModel}Text"));
+${capFirstModel} entry = ${uncapFirstModel}Persistence.findByPrimaryKey(entryId);
+addEntryResources(entry, addGroupPermissions, addGuestPermissions);
+${capFirstModel}ActivityKeys.UPDATE_${uppercaseModel}
+//  test ${snakecaseModel}
+}
+/**
+* Populate Model with values from a form
+*
+* @param request PortletRequest
+* @return ${capFirstModel} Object
+* @throws PortletException
+* @throws ${capFirstModel}ValidateException
+*/
+public ${capFirstModel} get${capFirstModel}FromRequest(
+long primaryKey, PortletRequest request) throws PortletException, ${capFirstModel}ValidateException {
+ThemeDisplay themeDisplay = (ThemeDisplay) request
+.getAttribute(WebKeys.THEME_DISPLAY);
+return entry;
+}
+}'''.stripIndent()
+				}
+			}
+		}
+		def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
+		def outPath = new File(TEMP_DIR + TEST_DIR + DS + outputFileName)
+		TemplateGenerator tg = new TemplateGenerator(filePath,null)
+		
+		def checkpattern = [
+				'com.liferay.test' : '${packageName}',
+				'SampleSB' : '${capFirstModel}',
+				'sampleSB' : '${uncapFirstModel}',
+				'samplesb' : '${lowercaseModel}',
+				'SAMPLESB' : '${uppercaseModel}',
+				'sample-sb' : '${snakecaseModel}'
+			]
+		
+		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+		String expected = FileUtils.readFileToString(outPath, Charset.defaultCharset());
+		def result = tg.replaceKeywords(contents,checkpattern)
+		//FileUtils.writeStringToFile( outPath, result, Charset.defaultCharset());
+		
+		then:
+		true == outPath.exists()
+		result == expected
+		
+	}
+	
 	def setup() {
 		FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
 		System.setOut(new PrintStream(outContent));
