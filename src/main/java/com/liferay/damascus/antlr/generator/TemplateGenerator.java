@@ -11,11 +11,11 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
+import com.liferay.damascus.cli.common.CommonUtil;
 
 /**
  * Template Generator
@@ -98,26 +98,7 @@ public class TemplateGenerator {
 	public String replaceKeywords(File contentsFile, Map<String, String> replacements) 
 			throws IOException {
 		String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
-		return replaceKeywords(contents, replacements);
-	}
-	
-	/**
-	 * Replace keywords in contents
-	 * 
-	 * @param contents
-	 * @param replacements
-	 * @return
-	 */
-	public String replaceKeywords(String contents, Map<String, String> replacements) {
-		String converted = contents;
-		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
-			converted = 
-				StringUtils.replace(
-					converted,
-					replacement.getKey(),
-					replacement.getValue());
-		}
-		return converted;
+		return CommonUtil.replaceKeywords(contents, replacements);
 	}
 
 	protected File contentsFile;

@@ -18,6 +18,7 @@ public class TemplateContext {
 		rootAttributes = new ConcurrentHashMap<>();
 		syncAttributes = new ConcurrentHashMap<>();
 		contentsIdMap = new ConcurrentHashMap<>();
+		rootTagExist = false;
 	}
 
 	public void setRootAttribute(String key, String value) {
@@ -37,4 +38,17 @@ public class TemplateContext {
 	@Getter
 	@Setter
 	protected Map<String, String> contentsIdMap;
+	
+	@Getter
+	@Setter
+	protected boolean rootTagExist;
+	
+	/**
+	 * Attribute keys
+	 */
+	static public final String ATTR_ID = "id";
+	static public final String ATTR_VERSION = "version";
+	static public final String ATTR_TEMPLATE_DIR = "templateDir";
+	static public final String ATTR_TEMPLATE_NAME = "templateName";
+	
 }

@@ -4,6 +4,8 @@ import java.nio.charset.Charset
 
 import org.apache.commons.io.FileUtils
 
+import com.liferay.damascus.cli.common.CommonUtil
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -548,7 +550,7 @@ return entry;
 		
 		String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 		String expected = FileUtils.readFileToString(outPath, Charset.defaultCharset());
-		def result = tg.replaceKeywords(contents,checkpattern)
+		def result = CommonUtil.replaceKeywords(contents,checkpattern)
 		//FileUtils.writeStringToFile( outPath, result, Charset.defaultCharset());
 		
 		then:

@@ -47,6 +47,8 @@ public class SourceConvertListener extends DmscSrcParserExListener {
 
 			sourceContext.setRootAttribute(attribute.Name().getText(), value);
 		}
+		// Root tag exist flag
+		sourceContext.setRootTagExist(true);
 	}
 
 	/**
