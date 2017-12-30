@@ -65,6 +65,8 @@ public class CommonUtil {
 	 * @return String List
      */
 	static public List<String> stringToList(String source) {
+
 		return Arrays.asList(source.split("\\s*,\\s*"));
 	}
+
 }

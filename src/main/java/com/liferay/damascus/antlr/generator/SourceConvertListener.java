@@ -1,98 +1,120 @@
 package com.liferay.damascus.antlr.generator;
 
-import java.util.List;
-
+import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
 import com.liferay.damascus.antlr.common.TemplateGenerateValidator;
+import com.liferay.damascus.antlr.template.DmscSrcParser;
+import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 
-import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
-import com.liferay.damascus.antlr.template.DmscSrcParser;
-import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
-
-import lombok.Getter;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
+import java.util.List;
 
 /**
  * Source Convert Listener
- * 
- * Listner for converting source files into templates. 
- * 
- * @author Yasuyuki Takeo
+ * <p>
+ * Listner for converting source files into templates.
  *
+ * @author Yasuyuki Takeo
  */
+@Slf4j
 public class SourceConvertListener extends DmscSrcParserExListener {
 
-	/**
-	 * Constructor
-	 *
-	 * @param tokens
-	 * @param targetTemplateContext
+    /**
+     * Constructor
+     *
+     * @param tokens
+     * @param targetTemplateContext
      */
-	public SourceConvertListener(TokenStream tokens, TemplateContext targetTemplateContext) {
+    public SourceConvertListener(TokenStream tokens, TemplateContext targetTemplateContext) {
 
-		rewriter = new TokenStreamRewriter(tokens);
-		sourceContext = new TemplateContext();
-		this.targetTemplateContext = targetTemplateContext;
-	}
+        rewriter = new TokenStreamRewriter(tokens);
+        sourceContext = new TemplateContext();
+        this.targetTemplateContext = targetTemplateContext;
+        setCurrentSyncId(null);
+    }
 
-	/**
-	 * Get Root Element
-	 */
-	@Override
-	public void exitRootelement(DmscSrcParser.RootelementContext ctx) {
+    /**
+     * Get Root Element
+     */
+    @Override
+    public void exitRootelement(DmscSrcParser.RootelementContext ctx) {
 
-		List<AttributeContext> attributes = ctx.attribute();
-		for (AttributeContext attribute : attributes) {
+        List<AttributeContext> attributes = ctx.attribute();
+        for (AttributeContext attribute : attributes) {
 
-			String value = stripQuotations(attribute.STRING().getText());
+            String value = stripQuotations(attribute.STRING().getText());
 
-			sourceContext.setRootAttribute(attribute.Name().getText(), value);
-		}
-		// Root tag exist flag
-		sourceContext.setRootTagExist(true);
+            sourceContext.setRootAttribute(attribute.Name().getText(), value);
+        }
+        // Root tag exist flag
+        sourceContext.setRootTagExist(true);
 
-//        List<String> errors = TemplateGenerateValidator.rootValidator(sourceContext);
-//        if(0 < errors.size()) {
-//            throw new ParseCancellationException("parse error");
-//        }
+        // Validate attributes
+        List<String> errors = TemplateGenerateValidator.rootValidator(sourceContext);
+        if (0 < errors.size()) {
+            setErrors(errors);
+        }
 
-	}
+    }
 
-	/**
-	 * Get Sync Start element
-	 */
-	@Override
-	public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
-		List<AttributeContext> attributes = ctx.attribute();
-		for (AttributeContext attribute : attributes) {
-			if (TemplateContext.ATTR_ID.equals(attribute.Name().getText())) {
+    /**
+     * Get Sync Start element
+     */
+    @Override
+    public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
+        List<AttributeContext> attributes = ctx.attribute();
 
-				String currentId = stripQuotations(attribute.STRING().getText());
+        String currentId = getAttributeId(attributes, TemplateContext.ATTR_ID);
 
-				sourceContext.setSyncAttribute(currentId, "");
-				return;
-			}
-		}
-	}
+        if (!currentId.equals("")) {
+            if (sourceContext.isSyncIdExist(currentId)) {
+                setError("ID is duplicated. The old id contents will be overwritten. Id <" + currentId + ">");
+            }
+            sourceContext.setSyncAttribute(currentId, "");
 
-	/**
-	 * Get text data between sync tag
-	 */
-	@Override
-	public void exitSavedata(DmscSrcParser.SavedataContext ctx) {
-		// Delete contents between tags
-		// rewriter.delete(ctx.start);
-		// Replace contents here
-		// rewriter.insertAfter(ctx.start, "replace here");
-	}
+            setCurrentSyncId(currentId);
+        }
+    }
 
-	@Getter
-	protected TokenStreamRewriter rewriter;
+    /**
+     * Get text data between sync tag
+     */
+    @Override
+    public void exitSavedata(DmscSrcParser.SavedataContext ctx) {
+        if (null == targetTemplateContext ||
+            null == currentSyncId) {
+            setError("Skip save data because some required data are null");
+            return;
+        }
 
-	@Getter
-	protected TemplateContext sourceContext;
+        if (!targetTemplateContext.isSyncIdExist(currentSyncId)) {
+            setError("No target id contents found : Target ID <" + currentSyncId + ">");
+            return;
+        }
 
-	protected TemplateContext targetTemplateContext;
+        // Delete contents between tags
+        rewriter.delete(ctx.start);
+
+        // Replace contents
+        rewriter.insertAfter(ctx.start, targetTemplateContext.getSyncAttribute(currentSyncId));
+
+        // Reset currentSyncId
+        setCurrentSyncId(null);
+    }
+
+    @Getter
+    protected TokenStreamRewriter rewriter;
+
+    @Getter
+    protected TemplateContext sourceContext;
+
+    protected TemplateContext targetTemplateContext;
+
+    @Getter
+    @Setter
+    protected String currentSyncId = null;
 
 }
