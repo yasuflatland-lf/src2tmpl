@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Template Scan Listener
  * <p/>
- * Scanning a target template file to correct replace contents for template generator
+ * Scanning a target template file to correct replace contents for template process
  *
  * @author Yasuyuki Takeo
  */

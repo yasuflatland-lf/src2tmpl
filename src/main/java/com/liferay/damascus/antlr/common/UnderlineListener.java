@@ -18,7 +18,7 @@ public class UnderlineListener extends BaseErrorListener {
 	}
 
 	/**
-	 * Under Line error generator
+	 * Under Line error process
 	 * 
 	 * When a error occurs, this method decorate the error with hat.
 	 * @param recognizer

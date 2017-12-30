@@ -4,6 +4,8 @@ import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.cli.common.CommonUtil;
+import lombok.Builder;
+import lombok.NonNull;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -21,18 +23,8 @@ import java.util.Map;
  *
  * @author Yasuyuki Takeo
  */
+@Builder
 public class TemplateGenerator {
-
-    /**
-     * Constructor
-     *
-     * @param contentsFile
-     * @param targetTemplateContext
-     */
-    public TemplateGenerator(File contentsFile, TemplateContext targetTemplateContext) {
-        this.contentsFile = contentsFile;
-        this.targetTemplateContext = targetTemplateContext;
-    }
 
     /**
      * Template Generator
@@ -40,7 +32,7 @@ public class TemplateGenerator {
      * @return processed string
      * @throws IOException
      */
-    public String generator() throws IOException {
+    public String process() throws IOException {
         String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
         // Always get data from a file
         return getSourceLoader(contents, targetTemplateContext).getRewriter().getText();
@@ -64,7 +56,7 @@ public class TemplateGenerator {
      * @param targetTemplateContext
      * @return
      */
-    protected SourceConvertListener getSourceLoader(String contents, TemplateContext targetTemplateContext) {
+    private SourceConvertListener getSourceLoader(String contents, TemplateContext targetTemplateContext) {
 
         CharStream        input  = CharStreams.fromString(contents);
         DmscSrcLexer      lexer  = new DmscSrcLexer(input);
@@ -99,6 +91,9 @@ public class TemplateGenerator {
         return CommonUtil.replaceKeywords(contents, replacements);
     }
 
-    protected File contentsFile;
-    protected TemplateContext targetTemplateContext;
+    @NonNull
+    private File contentsFile;
+
+    @Builder.Default
+    private TemplateContext targetTemplateContext = null;
 }

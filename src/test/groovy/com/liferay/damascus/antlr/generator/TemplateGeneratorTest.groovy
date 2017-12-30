@@ -64,8 +64,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         }
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        def result = tg.generator()
+        def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
 
         String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 
@@ -120,8 +119,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         }
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        def result = tg.generator()
+        def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
         String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
         def error_str = errContent.toString()
 
@@ -177,8 +175,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         }
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        def result = tg.generator()
+        def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
         String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
         def error_str = errContent.toString()
 
@@ -235,8 +232,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         }
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        def result = tg.generator()
+        def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
         String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
         def error_str = errContent.toString()
 
@@ -406,8 +402,7 @@ public class JarUtil {
         }
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        def result = tg.generator()
+        def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
 
         String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
 
@@ -450,7 +445,7 @@ TEST
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         TemplateGenerator tg = new TemplateGenerator(filePath, null)
-        tg.generator()
+        tg.process()
         TemplateContext sc = tg.getSourceContext()
         def rootAttr = sc.getRootAttributes()
 
@@ -535,7 +530,6 @@ return entry;
         }
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def outPath = new File(TEMP_DIR + TEST_DIR + DS + outputFileName)
-        TemplateGenerator tg = new TemplateGenerator(filePath, null)
 
         def checkpattern = [
                 'com.liferay.test': '${packageName}',

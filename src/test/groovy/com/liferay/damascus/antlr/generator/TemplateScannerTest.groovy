@@ -98,8 +98,12 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def compfilePath = new File(TEMP_DIR + TEST_DIR + DS + compFileName)
 
-        TemplateScanner ts = new TemplateScanner(filePath)
-        def result = ts.getTargetTemplateContext().getSyncAttributes()
+        def result = TemplateScanner
+                .builder()
+                .contentsFile(filePath)
+                .build()
+                .getTargetTemplateContext()
+                .getSyncAttributes()
 
         String contents = FileUtils.readFileToString(compfilePath, Charset.defaultCharset());
 

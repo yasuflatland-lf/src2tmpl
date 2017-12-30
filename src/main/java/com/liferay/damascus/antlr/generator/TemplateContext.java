@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Yasuyuki Takeo
  */
-@ToString(includeFieldNames=false)
+@ToString(includeFieldNames = false)
 public class TemplateContext {
 
     public TemplateContext() {
@@ -33,6 +33,16 @@ public class TemplateContext {
     }
 
     /**
+     * Get Root Attribute
+     *
+     * @param key
+     * @return
+     */
+    public String getRootAttribute(String key) {
+        return rootAttributes.get(key);
+    }
+
+    /**
      * Set Sync Attribute
      *
      * @param key
@@ -43,16 +53,6 @@ public class TemplateContext {
     }
 
     /**
-     * Check Sync ID exist
-     *
-     * @param syncId
-     * @return
-     */
-    public boolean isSyncIdExist(String syncId) {
-        return syncAttributes.containsKey(syncId);
-    }
-
-    /**
      * Get Attribute value
      *
      * @param key
@@ -60,6 +60,16 @@ public class TemplateContext {
      */
     public String getSyncAttribute(String key) {
         return syncAttributes.get(key);
+    }
+
+    /**
+     * Check Sync ID exist
+     *
+     * @param syncId
+     * @return
+     */
+    public boolean isSyncIdExist(String syncId) {
+        return syncAttributes.containsKey(syncId);
     }
 
     @Getter
@@ -80,8 +90,6 @@ public class TemplateContext {
      * Attribute keys
      */
     static public final String ATTR_ID = "id";
-    static public final String ATTR_VERSION = "version";
-    static public final String ATTR_TEMPLATE_DIR = "templateDir";
     static public final String ATTR_TEMPLATE_NAME = "templateName";
 
 }

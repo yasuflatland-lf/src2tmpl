@@ -3,6 +3,8 @@ package com.liferay.damascus.antlr.generator;
 import com.liferay.damascus.antlr.common.UnderlineListener;
 import com.liferay.damascus.antlr.template.DmscSrcLexer;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
+import lombok.Builder;
+import lombok.NonNull;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -22,16 +24,8 @@ import java.nio.charset.Charset;
  *
  * @author Yasuyuki Takeo
  */
+@Builder
 public class TemplateScanner {
-
-    /**
-     * Constructor
-     *
-     * @param contentsFile
-     */
-    public TemplateScanner(File contentsFile) {
-        this.contentsFile = contentsFile;
-    }
 
     /**
      * Get Contents Map
@@ -48,9 +42,9 @@ public class TemplateScanner {
      * Get Template Loader
      *
      * @param contents
-     * @return id and contents map for generator
+     * @return id and contents map for process
      */
-    protected TemplateScanListener getTemplateLoader(String contents) {
+    private TemplateScanListener getTemplateLoader(String contents) {
 
         CharStream        input  = CharStreams.fromString(contents);
         DmscSrcLexer      lexer  = new DmscSrcLexer(input);
@@ -70,5 +64,6 @@ public class TemplateScanner {
         return templateLoader;
     }
 
-    protected File contentsFile;
+    @NonNull
+    private File contentsFile;
 }

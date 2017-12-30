@@ -36,29 +36,24 @@ public class TemplateGenerateValidator {
             }
         }
 
-        // Version is optional, then the template directory must be configured instead
-        if (!rootAttributes.containsKey(TemplateContext.ATTR_VERSION)) {
-            if (!rootAttributes.containsKey(TemplateContext.ATTR_TEMPLATE_DIR)) {
-                errors.add(
-                    TemplateContext.ATTR_TEMPLATE_DIR +
-                        " needs to be configured when " + TemplateContext.ATTR_VERSION + " is not configured.");
-            } else {
-                String templateDir = rootAttributes.get(TemplateContext.ATTR_TEMPLATE_DIR);
+        return errors;
+    }
 
-                if (null == FilenameUtils.normalize(templateDir)) {
-                    errors.add(TemplateContext.ATTR_TEMPLATE_DIR + " is not valid path. <" + templateDir + ">");
-                }
-            }
-        } else {
-            // If version exists
-            String attrVersion = rootAttributes.get(TemplateContext.ATTR_VERSION);
+    /**
+     * Template file path validator
+     *
+     * @param templateFilePath
+     * @return Empty string when it's true or error message.
+     */
+    static public String templateFilePathValidator(String templateFilePath) {
 
-            if (attrVersion.equals("")) {
-                errors.add(TemplateContext.ATTR_VERSION + " is empty. must be configured");
-            }
+        String error = "";
+
+        if (null == FilenameUtils.normalize(templateFilePath)) {
+            error = "Template file path is invalid. <" + templateFilePath + ">";
         }
 
-        return errors;
+        return error;
     }
 
     /**

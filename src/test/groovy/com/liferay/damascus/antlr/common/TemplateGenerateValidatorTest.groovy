@@ -23,17 +23,10 @@ class TemplateGenerateValidatorTest extends Specification {
         result.size == result_size
 
         where:
-        attributes                                                          | result_size | _
-        ["templateName": "dummy", "version": "70"]                          | 0           | _ //success
-        ["templateName": "dummy", "templateDir": "/bar"]                    | 0           | _ //success
-        ["templateName": "dummy", "templateDir": "./bar"]                   | 0           | _ //success
-        ["templateName": "dummy", "version": "70", "templateDir": "./bar"]  | 0           | _ //success
-        ["templateName": "dummy", "version": "70", "templateDir": "../foo"] | 0           | _ //success
-        ["templateName": "", "templateDir": "./bar"]                        | 1           | _ //Error
-        ["templateName": "", "templateDir": "../foo"]                       | 2           | _ //Error
-        ["templateName": "dummy", "templateDir": "../foo"]                  | 1           | _ //Error
-        ["templateName": "", "templateDir": ".bar"]                         | 1           | _ //Error
-        []                                                                  | 2           | _ //Error
+        attributes                | result_size | _
+        ["templateName": "dummy"] | 0           | _ //success
+        ["templateName": ""]      | 1           | _ //Error
+        []                        | 1           | _ //Error
 
     }
 
