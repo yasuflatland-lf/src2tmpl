@@ -75,7 +75,7 @@ public class DmscSrcParserExListener extends DmscSrcParserBaseListener {
      * @param key
      * @return
      */
-    protected String getAttributeId(List<DmscSrcParser.AttributeContext> attributes, String key) {
+    protected String getAttributeValue(List<DmscSrcParser.AttributeContext> attributes, String key) {
         DmscSrcParser.AttributeContext attributeContext
             = getAttributeContext(attributes, key);
 

@@ -4,6 +4,7 @@ import com.liferay.damascus.antlr.common.DmscSrcParserExListener;
 import com.liferay.damascus.antlr.template.DmscSrcParser;
 import com.liferay.damascus.antlr.template.DmscSrcParser.AttributeContext;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -31,20 +32,23 @@ public class TemplateScanListener extends DmscSrcParserExListener {
     @Override
     public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
         List<AttributeContext> attributes = ctx.attribute();
-        for (AttributeContext attribute : attributes) {
-            if (TemplateContext.ATTR_ID.equals(attribute.Name().getText())) {
 
-                currentId = stripQuotations(attribute.STRING().getText());
+        String currentId = getAttributeValue(attributes, TemplateContext.ATTR_ID);
 
-                targetTemplateContext.setSyncAttribute(currentId, "");
-                return;
+        if (!currentId.equals("")) {
+            if (targetTemplateContext.isSyncIdExist(currentId)) {
+                setError("ID is duplicated. The old id contents will be overwritten. Id <" + currentId + ">");
             }
+            targetTemplateContext.setSyncAttribute(currentId, "");
+
+            setCurrentSyncId(currentId);
         }
+
     }
 
     @Override
     public void exitSyncelementEnd(DmscSrcParser.SyncelementEndContext ctx) {
-        currentId = "";
+        currentSyncId = "";
     }
 
     /**
@@ -52,15 +56,28 @@ public class TemplateScanListener extends DmscSrcParserExListener {
      */
     @Override
     public void exitSavedata(DmscSrcParser.SavedataContext ctx) {
+        if (null == currentSyncId) {
+            setError("Skip save data because some required data are null");
+            return;
+        }
+
+        if (!targetTemplateContext.isSyncIdExist(currentSyncId)) {
+            setError("No target id contents found : Target ID <" + currentSyncId + ">");
+            return;
+        }
+
         if (log.isDebugEnabled()) {
-            log.debug("ID <" + currentId + ">");
+            log.debug("ID <" + currentSyncId + ">");
             log.debug("Text <<< " + ctx.getText() + ">>>");
         }
-        targetTemplateContext.setSyncAttribute(currentId, ctx.getText());
+
+        targetTemplateContext.setSyncAttribute(currentSyncId, ctx.getText());
+        setCurrentSyncId(null);
     }
 
-
-    protected String currentId = "";
+    @Getter
+    @Setter
+    protected String currentSyncId = null;
 
     @Getter
     protected TemplateContext targetTemplateContext;

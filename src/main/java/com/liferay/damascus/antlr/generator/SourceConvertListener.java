@@ -67,7 +67,7 @@ public class SourceConvertListener extends DmscSrcParserExListener {
     public void exitSyncelementStart(DmscSrcParser.SyncelementStartContext ctx) {
         List<AttributeContext> attributes = ctx.attribute();
 
-        String currentId = getAttributeId(attributes, TemplateContext.ATTR_ID);
+        String currentId = getAttributeValue(attributes, TemplateContext.ATTR_ID);
 
         if (!currentId.equals("")) {
             if (sourceContext.isSyncIdExist(currentId)) {
