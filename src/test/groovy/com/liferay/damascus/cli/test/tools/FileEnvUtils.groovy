@@ -17,6 +17,14 @@ class FileEnvUtils {
         )
     }
 
+    static def createXmlTemplate(String rootPath, String fileName, String templateName) {
+        sourceEnvCreate(
+                rootPath,
+                fileName,
+                getXmlTemplate(templateName)
+        )
+    }
+
     static def sourceEnvCreate(String rootPath, String fileName, String contents) {
 
         FileUtils.forceMkdir(new File(rootPath));
@@ -61,6 +69,31 @@ class FileEnvUtils {
 /* ${rootTag} */
 /$;
         return retVal;
+    }
+
+    static def getXmlTemplate(String templateName) {
+        def rootTag = getXmlComment(getRootTag(templateName))
+        def retVal = $/
+    ${rootTag}
+<!-- <dmsc:sync id="foo1"> -->
+    <!-- REPLACED BY FOO1 FIRST TAG -->
+<!-- </dmsc:sync -->
+        <column name="groupId" type="long"/>
+
+        <!-- Audit fields -->
+        <column name="companyId" type="long"/>
+        <column name="userId" type="long"/>
+        <column name="userName" type="String"/>
+        <column name="createDate" type="Date"/>
+        <column name="modifiedDate" type="Date"/>
+
+<!-- <dmsc:sync id="barfoo"> -->
+        <!-- REPLACED BY BARFOO SECOND TAG -->
+<!-- </dmsc:sync> -->
+
+/$;
+        return retVal;
+
     }
 
     static def getXmlContents(String templateName) {

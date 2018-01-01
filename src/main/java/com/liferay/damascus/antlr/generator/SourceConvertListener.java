@@ -95,11 +95,8 @@ public class SourceConvertListener extends DmscSrcParserExListener {
             return;
         }
 
-        // Delete contents between tags
-        rewriter.delete(ctx.start);
-
         // Replace contents
-        rewriter.insertAfter(ctx.start, targetTemplateContext.getSyncAttribute(currentSyncId));
+        rewriter.replace(ctx.start, ctx.stop, targetTemplateContext.getSyncAttribute(currentSyncId));
 
         // Reset currentSyncId
         setCurrentSyncId(null);
