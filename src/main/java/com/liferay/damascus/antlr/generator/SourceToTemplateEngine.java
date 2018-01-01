@@ -118,10 +118,10 @@ public class SourceToTemplateEngine {
      */
     private String normalizePath(String path) {
         // Normalize path
-        String validatedPath = FilenameUtils.normalize(templateDirPath);
+        String validatedPath = FilenameUtils.normalize(path);
 
         if (null == validatedPath) {
-            log.error("Template file path is invalid. <" + templateDirPath + ">");
+            log.error("Template file path is invalid. <" + path + ">");
             return null;
         }
 

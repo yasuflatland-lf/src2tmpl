@@ -8,12 +8,43 @@ import org.apache.commons.io.FileUtils
  * @author Yasuyuki Takeo
  */
 class FileEnvUtils {
+    static def createPropertiesSource(String rootPath, String fileName, String templateName) {
+        sourceEnvCreate(
+                rootPath,
+                fileName,
+                getPropertiesContents(templateName)
+        )
+    }
+
+    static def createPropertiesTemplate(String rootPath, String fileName, String templateName) {
+        sourceEnvCreate(
+                rootPath,
+                fileName,
+                getPropertiesTemplate(templateName)
+        )
+    }
+
+    static def createJavaSource(String rootPath, String fileName, String templateName) {
+        sourceEnvCreate(
+                rootPath,
+                fileName,
+                getJavaContents(templateName)
+        )
+    }
+
+    static def createJavaTemplate(String rootPath, String fileName, String templateName) {
+        sourceEnvCreate(
+                rootPath,
+                fileName,
+                getJavaTemplate(templateName)
+        )
+    }
 
     static def createXmlSource(String rootPath, String fileName, String templateName) {
         sourceEnvCreate(
-            rootPath,
-            fileName,
-            getXmlContents(templateName)
+                rootPath,
+                fileName,
+                getXmlContents(templateName)
         )
     }
 
@@ -155,6 +186,34 @@ class FileEnvUtils {
 
     }
 
+    static def getJavaTemplate(String templateName) {
+        def rootTag = getJavaComment(getRootTag(templateName))
+        def retVal = $/
+${rootTag}
+package com.liferay.test.service.impl;
+
+public class SampleSBLocalServiceImpl
+    extends SampleSBLocalServiceBaseImpl {
+
+/* <dmsc:sync id="bar123foo"> */
+    <!-- REPLACED BY BAR123FOO FIRST TAG -->
+/* </dmsc:sync> */
+
+    @Override
+    public void addEntryResources(
+        long entryId, String[] groupPermissions, String[] guestPermissions)
+        throws PortalException {
+/* <dmsc:sync id="asdf"> */
+        <!-- REPLACED BY ASDF SECOND TAG -->
+/* </dmsc:sync> */
+        addEntryResources(entry, groupPermissions, guestPermissions);
+    }
+}
+/$;
+        return retVal;
+
+    }
+
     static def getJavaContents(String templateName) {
         def rootTag = getJavaComment(getRootTag(templateName))
         def retVal = $/
@@ -198,6 +257,27 @@ public class SampleSBLocalServiceImpl
         addEntryResources(entry, groupPermissions, guestPermissions);
     }
 }
+/$;
+        return retVal;
+
+    }
+
+    static def getPropertiesTemplate(String templateName) {
+        def rootTag = getPropertyComment(getRootTag(templateName))
+        def retVal = $/
+${rootTag}
+include-and-override=portlet-ext.properties
+# <dmsc:sync id="propstat1">
+<!-- REPLACED BY PROPSTAT1 FIRST TAG -->
+# </dmsc:sync>
+
+#
+# Input a list of comma delimited resource action configurations that will be
+# read from the class path.
+#
+# <dmsc:sync id="propstat2">
+<!-- REPLACED BY PROPSTAT2 SECOND TAG -->
+# </dmsc:sync>
 /$;
         return retVal;
 

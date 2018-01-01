@@ -8,20 +8,20 @@ import spock.lang.Unroll
 import java.nio.charset.StandardCharsets
 
 class SourceToTemplateEngineTest extends AntlrTestBase {
+    static def checkpattern = [
+            'com.liferay.test': '${packageName}',
+            'SampleSB'        : '${capFirstModel}',
+            'sampleSB'        : '${uncapFirstModel}',
+            'samplesb'        : '${lowercaseModel}',
+            'SAMPLESB'        : '${uppercaseModel}',
+            'sample-sb'       : '${snakecaseModel}'
+    ]
 
     @Unroll("Smoke test of generator (No template exists pattern)")
     def "Smoke test of generator (No template exists pattern)"() {
         when:
         def targetName = "service.xml"
         def targetTemplateName = "Portlet_XXXXROOT_service.xml.ftl"
-        def checkpattern = [
-                'com.liferay.test': '${packageName}',
-                'SampleSB'        : '${capFirstModel}',
-                'sampleSB'        : '${uncapFirstModel}',
-                'samplesb'        : '${lowercaseModel}',
-                'SAMPLESB'        : '${uppercaseModel}',
-                'sample-sb'       : '${snakecaseModel}'
-        ]
 
         FileEnvUtils.createXmlSource(SRC_DIR, targetName, targetTemplateName)
         File createdFile = new File(SRC_DIR + DS + targetName)
@@ -40,26 +40,42 @@ class SourceToTemplateEngineTest extends AntlrTestBase {
         true == createdTemplate.exists()
     }
 
-    @Unroll("Smoke test of generator (Template has existed pattern)")
-    def "Smoke test of generator (Template has existed pattern)"() {
+    @Unroll("Multiple test")
+    def "Multiple test"() {
         when:
-        def targetName = "service.xml"
-        def targetTemplateName = "Portlet_XXXXROOT_service.xml.ftl"
-        def checkpattern = [
-                'com.liferay.test': '${packageName}',
-                'SampleSB'        : '${capFirstModel}',
-                'sampleSB'        : '${uncapFirstModel}',
-                'samplesb'        : '${lowercaseModel}',
-                'SAMPLESB'        : '${uppercaseModel}',
-                'sample-sb'       : '${snakecaseModel}'
-        ]
+        //---------------------
+        def targetName1 = "service.xml"
+        def targetTemplateName1 = "Portlet_XXXXROOT_service.xml.ftl"
 
-        FileEnvUtils.createXmlSource(SRC_DIR, targetName, targetTemplateName)
-        File createdFile = new File(SRC_DIR + DS + targetName)
+        FileEnvUtils.createXmlSource(SRC_DIR, targetName1, targetTemplateName1)
+        File createdFile1 = new File(SRC_DIR + DS + targetName1)
 
-        FileEnvUtils.createXmlTemplate(TMPLATE_DIR, targetTemplateName, targetTemplateName)
-        File createdTemplate = new File(TMPLATE_DIR + DS + targetTemplateName)
+        FileEnvUtils.createXmlTemplate(TMPLATE_DIR, targetTemplateName1, targetTemplateName1)
+        File createdTemplate1 = new File(TMPLATE_DIR + DS + targetTemplateName1)
 
+        //---------------------
+
+        def targetName2 = "SampleSBLocalServiceImpl.java"
+        def targetTemplateName2 = "Portlet_XXXXROOT_LocalServiceImpl.java.ftl"
+
+        FileEnvUtils.createJavaSource(SRC_DIR, targetName2, targetTemplateName2)
+        File createdFile2 = new File(SRC_DIR + DS + targetName2)
+
+        FileEnvUtils.createJavaTemplate(TMPLATE_DIR, targetTemplateName2, targetTemplateName2)
+        File createdTemplate2 = new File(TMPLATE_DIR + DS + targetTemplateName2)
+
+        //---------------------
+
+        def targetName3 = "test.properties"
+        def targetTemplateName3 = "Portlet_XXXXROOT_test.properties.ftl"
+
+        FileEnvUtils.createPropertiesSource(SRC_DIR, targetName3, targetTemplateName3)
+        File createdFile3 = new File(SRC_DIR + DS + targetName3)
+
+        FileEnvUtils.createPropertiesTemplate(TMPLATE_DIR, targetTemplateName3, targetTemplateName3)
+        File createdTemplate3 = new File(TMPLATE_DIR + DS + targetTemplateName3)
+
+        //---------------------
 
         SourceToTemplateEngine.builder()
                 .sourceRootPath(SRC_DIR)
@@ -68,17 +84,51 @@ class SourceToTemplateEngineTest extends AntlrTestBase {
                 .build()
                 .process()
 
-        def processedContents = FileUtils.readFileToString(createdTemplate, StandardCharsets.UTF_8);
-        def replacedContents = '''<!-- <dmsc:sync id="foo1"> -->
+        //---------------------
+        def processedContents1 = FileUtils.readFileToString(createdTemplate1, StandardCharsets.UTF_8);
+        def replacedContents11 = '''<!-- <dmsc:sync id="foo1"> -->
     <!-- REPLACED BY FOO1 FIRST TAG -->
 <!-- </dmsc:sync >'''
-        def replacedContens2 = '''<!-- <dmsc:sync id="barfoo"> -->
+        def replacedContens12 = '''<!-- <dmsc:sync id="barfoo"> -->
         <!-- REPLACED BY BARFOO SECOND TAG -->
 <!-- </dmsc:sync> -->'''
+
+        //---------------------
+        def processedContents21 = FileUtils.readFileToString(createdTemplate2, StandardCharsets.UTF_8);
+        def replacedContents22 = '''/* <dmsc:sync id="bar123foo"> */
+    <!-- REPLACED BY BAR123FOO FIRST TAG -->
+/* </dmsc:sync> */'''
+        def replacedContens2 = '''/* <dmsc:sync id="asdf"> */
+        <!-- REPLACED BY ASDF SECOND TAG -->
+/* </dmsc:sync> */'''
+
+        //---------------------
+
+        def processedContents3 = FileUtils.readFileToString(createdTemplate3, StandardCharsets.UTF_8);
+        def replacedContents31 = '''# <dmsc:sync id="propstat1"><!-- REPLACED BY PROPSTAT1 FIRST TAG -->
+# </dmsc:sync>'''
+        def replacedContens32 = '''# <dmsc:sync id="propstat2"><!-- REPLACED BY PROPSTAT2 SECOND TAG -->
+# </dmsc:sync>'''
+
         then:
-        true == createdFile.exists()
-        true == createdTemplate.exists()
-        true == processedContents.contains(replacedContents)
-        true == processedContents.contains(replacedContens2)
+        true == createdFile1.exists()
+        true == createdTemplate1.exists()
+        true == processedContents1.contains(replacedContents11)
+        true == processedContents1.contains(replacedContens12)
+
+        //---------------------
+
+        true == createdFile2.exists()
+        true == createdTemplate2.exists()
+        true == processedContents21.contains(replacedContents22)
+        true == processedContents21.contains(replacedContens2)
+
+        //---------------------
+
+        true == createdFile3.exists()
+        true == createdTemplate3.exists()
+        true == processedContents3.contains(replacedContents31)
+        true == processedContents3.contains(replacedContens32)
     }
+
 }
