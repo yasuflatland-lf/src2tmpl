@@ -54,7 +54,7 @@ public class SourceConvertListener extends DmscSrcParserExListener {
 
         // Validate attributes
         List<String> errors = TemplateGenerateValidator.rootValidator(sourceContext);
-        if (0 < errors.size()) {
+        if (!errors.isEmpty()) {
             setErrors(errors);
         }
 

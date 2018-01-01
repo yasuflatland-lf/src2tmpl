@@ -1,19 +1,13 @@
 package com.liferay.damascus.antlr.generator
 
+import com.liferay.damascus.cli.test.tools.AntlrTestBase
 import com.liferay.damascus.cli.common.CommonUtil
 import org.apache.commons.io.FileUtils
-import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
-class TemplateGeneratorTest extends Specification {
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-
-    static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
-    static final String TEST_DIR = "testdir"
-    static final String DS = "/"
+class TemplateGeneratorTest extends AntlrTestBase {
 
     @Unroll("smoke test (jsp file)")
     def "smoke test (jsp file)"() {
@@ -66,7 +60,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
 
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
 
         then:
         true == filePath.exists()
@@ -120,7 +114,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
         def error_str = errContent.toString()
 
         then:
@@ -176,7 +170,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
         def error_str = errContent.toString()
 
         then:
@@ -233,7 +227,7 @@ Gadget gadget = (Gadget)renderRequest.getAttribute(WebKeys.GADGET);
 
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
         def error_str = errContent.toString()
 
         then:
@@ -404,7 +398,7 @@ public class JarUtil {
         def filePath = new File(TEMP_DIR + TEST_DIR + DS + testFileName)
         def result = TemplateGenerator.builder().contentsFile(filePath).build().process()
 
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
 
         then:
         true == filePath.exists()
@@ -540,10 +534,10 @@ return entry;
                 'sample-sb'       : '${snakecaseModel}'
         ]
 
-        String contents = FileUtils.readFileToString(filePath, Charset.defaultCharset());
-        String expected = FileUtils.readFileToString(outPath, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(filePath, StandardCharsets.UTF_8);
+        String expected = FileUtils.readFileToString(outPath, StandardCharsets.UTF_8);
         def result = CommonUtil.replaceKeywords(contents, checkpattern)
-        //FileUtils.writeStringToFile( outPath, result, Charset.defaultCharset());
+        //FileUtils.writeStringToFile( outPath, result, StandardCharsets.UTF_8);
 
         then:
         true == outPath.exists()
@@ -551,14 +545,4 @@ return entry;
 
     }
 
-    def setup() {
-        FileUtils.deleteQuietly(new File(TEMP_DIR + TEST_DIR))
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
-    }
-
-    def cleanup() {
-        System.setOut(null);
-        System.setErr(null);
-    }
 }

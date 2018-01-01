@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public class TemplateGenerator {
      * @throws IOException
      */
     public String process() throws IOException {
-        String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(contentsFile, StandardCharsets.UTF_8);
         // Always get data from a file
         return getSourceLoader(contents, targetTemplateContext).getRewriter().getText();
     }
@@ -45,7 +46,7 @@ public class TemplateGenerator {
      * @throws IOException
      */
     public TemplateContext getSourceContext() throws IOException {
-        String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(contentsFile, StandardCharsets.UTF_8);
         return getSourceLoader(contents, targetTemplateContext).getSourceContext();
     }
 
@@ -87,10 +88,15 @@ public class TemplateGenerator {
      */
     public String replaceKeywords(File contentsFile, Map<String, String> replacements)
         throws IOException {
-        String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(contentsFile, StandardCharsets.UTF_8);
         return CommonUtil.replaceKeywords(contents, replacements);
     }
 
+    /**
+     * REQUIRED
+     *
+     * Contents file path.
+     */
     @NonNull
     private File contentsFile;
 

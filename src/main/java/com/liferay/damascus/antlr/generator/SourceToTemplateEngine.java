@@ -2,14 +2,19 @@ package com.liferay.damascus.antlr.generator;
 
 import com.liferay.damascus.antlr.common.TemplateGenerateValidator;
 import com.liferay.damascus.cli.common.CommonUtil;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Source to Template convert engine
@@ -17,36 +22,27 @@ import java.util.List;
  * @author Yasuyuki Takeo
  */
 @Slf4j
+@Builder
 public class SourceToTemplateEngine {
 
     /**
      * Process source files to convert to template files
      *
-     * @param sourceRootPath  Source files' root directory. (this method will process directories under the root recursively)
-     * @param templateDirPath Template files' root directory. The path must be end with '/'
-     * @param patterns        White list of process target file extensions.
      * @throws IOException
      */
-    public void process(String sourceRootPath, String templateDirPath, List<String> patterns)
+    public void process()
         throws IOException {
 
-        // Fetch white pattern for target source files
-        if (null == patterns) {
-            patterns = CommonUtil.stringToList(EXT_WHITE_LIST);
-        }
-
         // Normalize path
-        String validatedPath = FilenameUtils.normalize(templateDirPath);
+        templateDirPath = normalizePath(templateDirPath);
 
-        if (null == validatedPath) {
+        if (null == templateDirPath) {
             log.error("Template file path is invalid. <" + templateDirPath + ">");
             return;
         }
 
-        templateDirPath = validatedPath;
-
         // Get target file list
-        List<File> targetFiles = CommonUtil.getTargetFiles(sourceRootPath, patterns);
+        List<File> targetFiles = CommonUtil.getTargetFiles(sourceRootPath, extentionPatterns);
 
         for (File target : targetFiles) {
 
@@ -65,7 +61,7 @@ public class SourceToTemplateEngine {
 
             List<String> errors = TemplateGenerateValidator.rootValidator(sourceTemplateContext);
 
-            if (0 < errors.size()) {
+            if (!errors.isEmpty()) {
                 for (String error : errors) {
                     log.error(error);
                 }
@@ -97,16 +93,86 @@ public class SourceToTemplateEngine {
                     .build()
                     .process();
 
-            // Write template file
+            // Replace keywords
+            processedContents =
+                CommonUtil.replaceKeywords(
+                    processedContents,
+                    replacements);
+
+            // Output template file
             FileUtils.writeStringToFile(
                 templateFullPath,
                 processedContents,
-                Charset.defaultCharset());
+                StandardCharsets.UTF_8);
 
         }
     }
 
+    /**
+     * Normalize path
+     * <p>
+     * Normalize path and add separator if the path doesn't end with a separator.
+     *
+     * @param path
+     * @return
+     */
+    private String normalizePath(String path) {
+        // Normalize path
+        String validatedPath = FilenameUtils.normalize(templateDirPath);
+
+        if (null == validatedPath) {
+            log.error("Template file path is invalid. <" + templateDirPath + ">");
+            return null;
+        }
+
+        if (!validatedPath.endsWith(File.separator)) {
+            validatedPath = validatedPath.concat(File.separator);
+        }
+
+        return validatedPath;
+    }
+
+    /**
+     * REQUIRED
+     * <p>
+     * Source files' root directory.
+     * (this method will process directories under the root recursively)
+     */
+    @NonNull
+    private String sourceRootPath;
+
+    /**
+     * REQUIRED
+     * <p>
+     * Template files' root directory.
+     * The path must be end with '/'
+     */
+    @NonNull
+    private String templateDirPath;
+
+    /**
+     * White list of process target file extensions.
+     */
+    @Builder.Default
+    private List<String> extentionPatterns = EXT_WHITE_LIST;
+
     // White list of searching directory.
     // TODO: This value must be configured in settings.properties under .damascus
-    static public final String EXT_WHITE_LIST = "*.java,*.jsp,*.xml,*.bnd,*.gradle,*.properties,*.json,*.jspf";
+    static public final List<String> EXT_WHITE_LIST =
+        Arrays.asList(
+            ".*.java",
+            ".*.jsp",
+            ".*.xml",
+            ".*.bnd",
+            ".*.gradle",
+            ".*.properties",
+            ".*.json",
+            ".*.jspf"
+        );
+
+    /**
+     * Replacement keywords map from base.json
+     */
+    @Builder.Default
+    private Map<String, String> replacements = new ConcurrentHashMap<>();
 }

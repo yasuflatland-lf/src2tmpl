@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Template Scanner
@@ -34,7 +35,7 @@ public class TemplateScanner {
      * @throws IOException
      */
     public TemplateContext getTargetTemplateContext() throws IOException {
-        String contents = FileUtils.readFileToString(contentsFile, Charset.defaultCharset());
+        String contents = FileUtils.readFileToString(contentsFile, StandardCharsets.UTF_8);
         return getTemplateLoader(contents).getTargetTemplateContext();
     }
 
